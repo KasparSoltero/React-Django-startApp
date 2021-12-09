@@ -1,0 +1,19 @@
+.upload-area {
+    background-color: rgb(235, 77, 4);
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5%;
+    margin-bottom: auto;
+    width: 50%;
+    height: 30%;
+    text-align: center;
+}
+
+.audio-container {
+    position: relative;
+    background-color:rgb(69, 201, 37);
+    width: 80%px;
+    height: 50%;
+    text-align: center
+}
