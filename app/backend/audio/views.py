@@ -5,6 +5,7 @@ from .models import UnprocessedAudio
 from django.views import View
 from django.http import HttpResponse
 import json
+from .models import *
 
 # Create your views here.
 
@@ -38,3 +39,18 @@ def TestFunctionView(request): #test function for calculating area of a circle
         area = AreaOfCircle(value)
 
         return HttpResponse(area) #convert area response to Http
+
+def UploadFileView(request):
+
+    if request.method == 'POST':
+
+        data = request.POST
+        print(data)
+        file = request.FILES['file']
+
+        UnprocessedAudio.objects.create(
+            title = data['title'],
+            filedata = file
+        )
+
+        return HttpResponse('success')

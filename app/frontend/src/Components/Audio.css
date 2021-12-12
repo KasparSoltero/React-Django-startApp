@@ -11,9 +11,10 @@
 }
 
 .audio-container {
-    position: relative;
+    position: absolute;
     background-color:rgb(69, 201, 37);
-    width: 80%px;
+    width: 70%;
     height: 50%;
+    left: 0;
     text-align: center
 }

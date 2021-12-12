@@ -9,7 +9,7 @@ function Menu() {
             <button onClick={null}>Dropdown</button>
             <div className='dropdown-content'>
                 <a href='/'>Home</a>
-                <a href='/second'>2</a>
+                <a href='/upload-audio'>Upload Audio</a>
                 <a href='/audio'>Audio</a>
                 <a href='/fourth'>Testing functions</a>
                 <a href='#'>5</a>

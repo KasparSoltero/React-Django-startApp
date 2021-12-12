@@ -4,7 +4,6 @@ import Sound from 'react-sound';
 import { Spectrogram } from 'react-spectrogram';
 import axios from 'axios';
 
-
 // Required to allow axios to make post requests to django
 axios.defaults.xsrfCookieName = 'csrftoken'
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
@@ -14,21 +13,20 @@ function Audio() {
     const [ audioFile, setAudioFile ] = useState(null);
     const [audioList, setAudioList] = useState(0);
 
-    const [ count, setCount ] = useState(0)
+    axios
+        .get("/api/unprocessedaudios/")
+        .then((res) => setAudioList(res))
+        .catch((err) => console.log(err));
 
     return (
         <div className='container'>
-            Testing audio / Spectrogram display... doesn't do much right now
-
-            <div className='upload-area'>
-                Upload Audio Here
-
-                {/* <form> */}
-                    <input type="file" id="inputAudio" name="inputAudio" onChange={()=>(3)} />
-                    <button className='uploadbutton' onClick={()=>null}>Send</button>
-                {/* </form> */}
-
+            Testing audio / Spectrogram display...
+            
+            <div className='AudioList'>
+                List of 'file' objects in database: <br/>
+                {JSON.stringify(audioList.data)}
             </div>
+
             <div className='audio-container'>
                 Audio display area
             </div>

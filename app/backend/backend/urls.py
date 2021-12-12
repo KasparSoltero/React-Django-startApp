@@ -5,10 +5,10 @@ from audio import views
 
 router = routers.DefaultRouter()
 router.register('unprocessedaudios', views.UnprocessedAudioView)
-# router.register('testfunctionview', views.TestFunctionView, basename='testfunctionview')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
-    path('test/', views.TestFunctionView)
+    path('test/', views.TestFunctionView),
+    path('uploadfiles/', views.UploadFileView)
 ]

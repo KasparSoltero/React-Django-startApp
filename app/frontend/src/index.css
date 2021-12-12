@@ -5,6 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  padding: 0;
 }
 
 code {
@@ -18,9 +19,22 @@ code {
   height: 90%;
   top: 10%;
   background-color: rgb(22, 150, 5);
+  min-width: auto;
+  right: 0;
+  left: 0;
 }
 
 .uploadbutton {
   height: 10%;
   width: 20%;
+}
+
+.AudioList {
+  position: absolute;
+  width: 30%;
+  height: 100%;
+  top: 0;
+  right: 0;
+  /* overflow: hidden; */
+  background-color: rgb(223, 187, 29)
 }

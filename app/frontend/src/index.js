@@ -5,7 +5,7 @@ import reportWebVitals from './reportWebVitals';
 
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { 
-  Second,
+  Upload_Audio,
   Home,
   Audio,
   Fourth,
@@ -16,7 +16,7 @@ ReactDOM.render(
   <Router>
     <Routes>
       <Route path='/' element={<Home />} />
-      <Route path='/second' element={<Second />} />
+      <Route path='/upload-audio' element={<Upload_Audio />} />
       <Route path='/audio' element={<Audio />} />
       <Route path='/fourth' element={<Fourth />} />
     </Routes>
