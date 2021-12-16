@@ -34,19 +34,33 @@
 }
 
 .audio-select {
-    position: relative;
+    margin: 5px 5px;
+    height: max-content;
+    display: block;
+    /* background-color: var(--highlight-color); */
 }
 
-.audio-select select {
-    display: none;
+.audio-select-file {
+    padding: 5px 0px;
+    display: block;
+    float: none;
+    height: max-content;
+    background-color: var(--grey-background-color);
 }
 
-.select-selected {
-    background-color: var(--highlight-color);
+.audio-select-file:hover { 
+    background-color: var(--main-color);
 }
 
-.select-selected:after {
-    position: absolute;
-    content: "";
-    top: 14px;
+.audio-select-file-selected {
+    padding: 5px 0px;
+    display: block;
+    float: none;
+    height: max-content;
+    background-color: var(--select-grey-background-color);
+}
+
+.select-audio-title {
+    margin: 0px 5px;
+    pointer-events: none;
 }

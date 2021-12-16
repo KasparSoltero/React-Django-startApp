@@ -11,9 +11,13 @@ var wavSpectro = require('wav-spectrogram');
 const decode = require('audio-decode');
 const buffer = require('audio-lena/wav');
 
-// Required to allow axios to make post requests to django
+// Sometimes required to allow axios to make post requests to django
 axios.defaults.xsrfCookieName = 'csrftoken'
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
+
+//initialise
+var wavesurfer = null;
+var wavesurfer2 = null;
 
 function Analysis() {
 
@@ -27,62 +31,77 @@ function Analysis() {
         .catch((err) => console.log(err));
     }
 
-    function handleInputChange(e) {
-        setAudioFile(e.target.value)
+    function handleAudioSelect(e) {
+        let id = e.target.id;
+        let audio = audioList.data.filter(audio=>audio.id==id)[0];
+        console.log(id)
+        console.log(audio)
+        console.log('setting audio File:')
+        console.log(audio.filedata)
+        setAudioFile(audio.filedata);
+        console.log('actual audio file:')
+        console.log(audioFile)
+
+        audioList.data.map(function(audio) {
+            let htmlEl = document.getElementById(audio.id)
+            if (audio.id == id) {
+                console.log('selecting:')
+                console.log(htmlEl)
+                htmlEl.setAttribute('class', 'audio-select-file-selected')
+            } else {
+                htmlEl.setAttribute('class', 'audio-select-file')
+            }
+        })
     }
 
     function displayAudioSelect() {
         if (audioList) {
-
-            let selectAudioContainer = document.getElementsByClassName('select-audio-container')[0]
-
-            //clear list
-            let elremove = document.querySelectorAll('div.audio-in-list')
-            for (let el of elremove) {
-                el.remove()
-            }
-
-            //create list from files in audioList
-            audioList.data.map(function(file) {
-                console.log(file.title)
-
-                
-                let listEl = document.createElement('div');
-
-                listEl.setAttribute('class', 'audio-in-list');
-                listEl.innerHTML += file.title
-                // tempListElement.setAttribute('onClick', "{ setAudioFile(file.filedata) }")
-
-                // tempListElement.setAttribute('onClick', setAudioFile(file.filedata))
-                
-                // selectAudioContainer.appendChild(tempListElement)
-
-            })
-
             return (
-
-                
-
-                <select value={audioFile} onChange={handleInputChange} multiple>
-                    {audioList.data.map((file)=>(
-                        <option value={file.filedata}>{file.title}</option>
-                    ))}
-                </select>
+                <div className='audio-select'>
+                    {audioList.data.map(function(audio) {
+                        return (
+                            <li id={audio.id}
+                                class='audio-select-file'
+                                onClick={(e)=>handleAudioSelect(e)}>
+                                <div id='test' className='select-audio-title'>
+                                    {audio.title}
+                                </div>
+                            </li>
+                        )
+                    })}
+                </div>
             )
         } else return (
             <div>fetching audio list...</div>
         )
     }
 
-    const Spectrogram = 0;
+    function playPauseButtons() {
+        console.log('hello')
 
-    var arrayBuffer = 0;
+        return (
+            <div>
+                <br/>
+                <button className='uploadbutton' onClick={function() {
+                    if (wavesurfer != undefined) {
+                        wavesurfer.playPause()
+                    }
+                }}>Play/Pause original</button>
+                <button className='uploadbutton' onClick={function() {
+                    if (wavesurfer2 != undefined) {
+                        wavesurfer2.playPause()
+                    }
+                }}>Play/Pause denoised</button>
+            </div>
+        )
+    }
 
     function updateWaveforms() {
 
         if (document.getElementById('original-waveform')) {
             var element = document.getElementById('original-waveform')
-            element.remove()
+            element.remove()}
+        if (document.getElementById('denoised-waveform')) {
             var element = document.getElementById('denoised-waveform')
             element.remove()
         }
@@ -93,8 +112,10 @@ function Analysis() {
         var domE2 = document.getElementById("waveform-container")
         domE2.appendChild(domE1)
 
-        var wavesurfer = Wavesurfer.create({
-            container: '#original-waveform'
+        wavesurfer = Wavesurfer.create({
+            container: '#original-waveform',
+            height: 200,
+            waveColor: 'black'
         });
 
         if (audioFile) {
@@ -132,10 +153,10 @@ function Analysis() {
             var domE2 = document.getElementById("waveform-container")
             domE2.appendChild(domE1)
 
-            var wavesurfer2 = Wavesurfer.create({
+            wavesurfer2 = Wavesurfer.create({
                 container: '#denoised-waveform',
-                waveColor: 'red',
-                height: 100,
+                waveColor: 'green',
+                height: 200,
                 barHeight: 100
             });
             
@@ -182,7 +203,6 @@ function Analysis() {
             <div className='select-audio-container'>
                 Select audio file.
                 <button onClick={()=>updateAudioList()}>. Refresh</button>
-                <br/>
                 {displayAudioSelect()}
                 {/* <canvas id='spectrogram-canvas' width='200' height='100'></canvas>
                 {displaySpectrogram()} */}
@@ -191,6 +211,7 @@ function Analysis() {
             <button className='uploadbutton' onClick={()=>updateWaveforms()}>update</button>
             <button className='uploadbutton' onClick={()=>denoiseWaveform()}>de-noise</button>
 
+            {playPauseButtons()}
 
             <script src = 'https://unpkg.com/wavesurfer.js'></script>
 
