@@ -23,13 +23,10 @@ function Example() {
 }
 
 function Home() {
+
   return (
-    <div className="container">
-      <div className="body">
-        <div className="test">
-          {Example()}
-        </div>
-      </div>
+    <div className="main-box">
+      <h1>Home page</h1>
     </div>
   );
 }

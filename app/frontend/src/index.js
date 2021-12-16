@@ -7,30 +7,24 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { 
   Upload_Audio,
   Home,
-  Audio,
+  Analysis,
   Fourth,
   Menu
 } from './Components/components';
 
 ReactDOM.render(
   <Router>
+    <Menu />
     <Routes>
       <Route path='/' element={<Home />} />
       <Route path='/upload-audio' element={<Upload_Audio />} />
-      <Route path='/audio' element={<Audio />} />
+      <Route path='/analysis' element={<Analysis />} />
       <Route path='/fourth' element={<Fourth />} />
     </Routes>
-    <Menu />
   </Router>,
 
   document.getElementById('root')
 );
-
-// ReactDOM.render(
-//   <App />,
-//   document.getElementById('root')
-// )
-
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

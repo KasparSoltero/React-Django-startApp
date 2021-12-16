@@ -6,13 +6,6 @@
     left: 50%;
 }
 
-.test {
-    position: relative;
-    right: 50%;
-    top: 50%;
-}
-
-
 .App-header {
 background-color: #282c34;
 min-height: 100vh;

@@ -1,9 +1,9 @@
 from django.contrib import admin
-from .models import UnprocessedAudio
+from .models import AudioFile
 
-class UnprocessedAudioAdmin(admin.ModelAdmin):
+class AudioFileAdmin(admin.ModelAdmin):
     list_display = ('title', 'filedata')
 
 # Register your models here.
 
-admin.site.register(UnprocessedAudio, UnprocessedAudioAdmin)
+admin.site.register(AudioFile, AudioFileAdmin)

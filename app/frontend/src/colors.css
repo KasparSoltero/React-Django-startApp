@@ -1,0 +1,16 @@
+
+
+:root{
+    --main-color:rgb(221, 232, 221);
+    --second-color: rgb(131, 190, 143);
+    --alt-color: rgb(175, 218, 186);
+    --grey-background-color: rgb(178, 185, 178);
+
+    --bright-color: rgb(70, 153, 69);
+    --highlight-color: rgb(73, 177, 140);
+
+    --text-color-main: rgb(52, 47, 49);
+    --text-color-alt: rgb(67, 65, 65);
+
+    --thin-line-color: rgb(180, 180, 180);
+  }

@@ -1,3 +1,23 @@
+@import './colors.css';
+
+html, body, #root {
+  height: 100%;
+  /* overflow: hidden; */
+}
+
+.bogbox {
+  width: 100%;
+  height: 100%;
+}
+
+.main-box {
+  position: relative;
+  /* width: 100%; */
+  height: 100%;
+  background-color: var(--main-color);
+  top: 0px;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -6,6 +26,8 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   padding: 0;
+  height: 100%;
+  width: 100%;
 }
 
 code {
@@ -13,28 +35,7 @@ code {
     monospace;
 }
 
-.container {
-  position: absolute;
-  width: 100%;
-  height: 90%;
-  top: 10%;
-  background-color: rgb(22, 150, 5);
-  min-width: auto;
-  right: 0;
-  left: 0;
-}
-
 .uploadbutton {
   height: 10%;
   width: 20%;
-}
-
-.AudioList {
-  position: absolute;
-  width: 30%;
-  height: 100%;
-  top: 0;
-  right: 0;
-  /* overflow: hidden; */
-  background-color: rgb(223, 187, 29)
 }
