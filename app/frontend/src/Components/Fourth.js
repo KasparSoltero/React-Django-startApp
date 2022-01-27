@@ -1,55 +1,42 @@
 import axios, { Axios } from "axios";
 import { useState, useEffect } from 'react';
 
+// import random from math.random
 
-// Required to allow axios to make post requests to django
-axios.defaults.xsrfCookieName = 'csrftoken'
-axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
-
+import './Fourth.css'
+import waveform from './waveform.js'
 
 function Fourth() {
 
-    const [ output, setOutput ] = useState('0000')
-    const [ input, setInput  ] = useState(0)
+    const [ input, setInput ] = useState(0)
+    const [ waveform_data, set_waveform_data ] = useState(null)
 
-    function UpdateOutput() {
 
-        setInput(input+1);
-        
-        var temp = document.getElementById('testinput').value
-        temp = parseInt(temp)
-
-        console.log(temp)
-        console.log(typeof(temp))
-        setInput(temp)
-
-        // axios post method, sends some form data to the function specified by the url
-        // response is recieved in the .then() function which updates the output accordingly
-        axios({
-            method: 'post',
-            url: '/test/',
-            data: {
-                value: input,
-                testdata2: 'Talofa'
-                }
+    function updateInput() {
+        if (document.getElementById('testinput')) {
+            var temp = document.getElementById('testinput').value
+            temp = parseInt(temp)
+            setInput(temp)
+            
+            set_waveform_data({
+                'data': [50, 0, temp+1, 5, temp-1, 40, temp*2, 15, temp+10, 30, 25]
             })
-        .then(
-            (response)=>setOutput(response.data));
+
+        } else {
+            console.log('here2')
+        }
     }
 
     return (
-        <div className='container'>
-            Testing sending data to function views!
-            <br/>
-            Simple area of circle example calculation done in python:
+        <div className='main-box'>
             <br/>
             Input radius :
-            <input type='number' id='testinput'/>
+            <input className='test-input' type='number' id='testinput' onChange={()=>updateInput()}/>
             <br/>
-            <button className='uploadbutton' onClick={()=>UpdateOutput()}>Submit</button>
             <br/>
-            Area of circle is :
-            {output}
+            Input:  {input}
+            <br/>
+            Bar:    {waveform(waveform_data)}
         </div>
     )
 }

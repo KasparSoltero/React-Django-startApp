@@ -8,107 +8,159 @@ import Wavesurfer from 'wavesurfer.js'
 
 function Upload_Audio() {
 
-    const [audioFile, setAudioFile] = useState(0);
     const [audioList, setAudioList] = useState(0);
-    const [ output, setOutput ] = useState(0);
 
-    const [ audioUrls, setAudioUrls ] = useState(0);
+    function denoiseNewAudios() {
+        //Denoise unprocessed audio files
+
+        if (audioList) {
+            audioList.data.map(function(audio) {
+                console.log(audio)
+                if (!audio.denoisedFile) {
+                    console.log('here')
+
+                    const formdata =  new FormData();
+                    formdata.append('id', audio.id)
+
+                    axios({
+                        method: 'post',
+                        url: '/add-denoised/',
+                        data: formdata
+                    }).then((response) => console.log(response))
+
+                } else console.log('already processed')
+            })
+        }
+    }
+
+
+    function convolveNewAudios() {
+        //Convolve unprocessed audio files
+
+        if (audioList) {
+            audioList.data.map(function(audio) {
+                console.log('convolving audio file:')
+                console.log(audio)
+                // if (!audio.convolveFile) {
+                //     console.log('here')
+
+                const formdata =  new FormData();
+                formdata.append('id', audio.id)
+
+                axios({
+                    method: 'post',
+                    url: '/convolve-audio/',
+                    data: formdata
+                }).then((response) => console.log(response))
+
+                // } else console.log('already processed')
+            })
+        }
+    }
+
+
+    function uploadFilesToDB() {
+        //Send group of files to backend, which then uploads them one by one
+
+        var uploadData = document.getElementById('uploadFiles').files
+        var numFiles = uploadData['length'];
+
+
+        for (let i = 0; i<numFiles; i++) {
+            const formdata = new FormData();
+            formdata.append('title', uploadData[i].name)
+            formdata.append('file', uploadData[i]);
+            axios({
+                method: 'post',
+                url: '/uploadfiles/',
+                data: formdata,
+            }).then(
+                (response) => console.log(response))
+        }
+
+    }
+
+
+    function uploadFilesasrefTemp() {
+        var uploadData = document.getElementById('uploadFiles').files
+        var numFiles = uploadData['length'];
+
+
+        for (let i = 0; i<numFiles; i++) {
+            const formdata = new FormData();
+            formdata.append('title', uploadData[i].name)
+            formdata.append('file', uploadData[i]);
+            axios({
+                method: 'post',
+                url: '/add-reference-temp/',
+                data: formdata,
+            }).then(
+                (response) => console.log(response))
+        }
+    }
+
 
     function updateAudioList() {
-        //list of audio files in integer form are retrieved from the database
-
-        // axios({
-        //     method: 'get',
-        //     url: '/retrieve-audio/',
-        // }).then(
-        //     //returned as a string like: [file_1.wav, [0,1,2,3,4,5,6]][file_2.wav, [7,8,9,10,11,12]]
-        //     (response)=>setAudioList(response.data)
-        // ).catch(
-        //     (err)=>console.log(err))
-
         axios
-            .get('api/unprocessedaudios/')
-            .then((res)=>setAudioUrls(res.data))
-            .catch((err)=>console.log(err))
-        
-        {displayAudioList()}
-
+        .get("/api/unprocessedaudios/")
+        .then((response) => setAudioList(response))
+        .catch((err) => console.log(err));
     }
+
 
     function displayAudioList() {
+        if (audioList) {
 
-        if (audioUrls) {
-            
-            // var listAudio = []
-
-            // var temp = audioList.slice(1, audioList.length-1).split('][')
-            // temp.forEach(element => listAudio.push(element.split("', ")))
-            
-            // // signal is sent by database as a string, have to change it to a JS array
-            // for (var i=0; i < listAudio.length; i++) {
-
-            //     var intArray = listAudio[i][1]
-            //         .slice(1, listAudio[i][1].length-1)
-            //         .split(',')
-            //         .map(item => parseInt(item));
-                
-            //     listAudio[i][1] = intArray
-            // }
-            // console.log(listAudio)
-
-            var wavesurfer = Wavesurfer.create({
-                container: '#waveform2',
-                interact: true,
-                mediaControls: true
-                
-            })
-
-            console.log(audioUrls)
-            audioUrls.forEach((audioUrl)=>console.log(audioUrl['filedata']))
-            wavesurfer.load(audioUrls[0]['filedata'])
-
+            function isDenoised(audio) {
+                console.log(audio)
+                if (audio.denoisedFile) {
+                    if (false) {
+                        return 'convolved'
+                    } else return 'denoised'
+                } else return 'not-denoised'
+            }
             return (
-                <div className='AudioList'>
-                    
+                <div className='audio-list'>
+                    {audioList.data.map(function(audio) {
+                        return (
+                            <li id={audio.id}
+                                class='audio-file'
+                                >
+                                <div id='test' className='audio-title'>
+                                    {audio.title}
+                                </div>
+                                <div id='process-stage'>
+                                    <div id={isDenoised(audio)}/>
+                                </div>
+                            </li>
+                        )
+                    })}
                 </div>
             )
-        }        
+        } else return (
+            <div>fetching audio list...</div>
+        )
     }
 
-    function addFileToObjects() {
-        //Construct file object from uploaded file and send it to database
-
-        var audioFile = document.getElementById('uploadFile').files[0];
-        var filename = document.getElementById('uploadFile').files[0].name;
-
-        const formdata = new FormData();
-        formdata.append('title', filename)
-        formdata.append('file', audioFile)
-        
-        axios({
-            method: 'post',
-            url: '/uploadfiles/',
-            data: formdata,
-            }).then(
-            (response)=>setOutput(response.data));
-    }
 
     return (
         <div className='main-box'>
             ....testing file upload! <br/>
             
-            <div className='AudioList-container'>
-                List of 'file' objects in database: 
+            <div className='audio-container'>
                 <button onClick={()=>updateAudioList()}>. Refresh</button>
-                <br/>
-                <script src = 'https://unpkg.com/wavesurfer.js'></script>
-                <div id='waveform2'></div>
-                
-            </div>
+                <button onClick={()=>denoiseNewAudios()}>. Denoise</button>
+                <button onClick={()=>convolveNewAudios()}>. Convolve</button>
 
-            <input name='uploadFile' type='file' id='uploadFile' />
-            <button className='uploadbutton' onClick={() => addFileToObjects()}>
-                Upload file to database
+                {displayAudioList()}
+            </div>            
+
+            <input name='uploadFiles' type='file' id='uploadFiles' multiple/>
+            <button className='uploadbutton' onClick={() => uploadFilesToDB()}>
+                Upload files to database!
+            </button>
+            <button className='uploadbutton' onClick={() => uploadFilesasrefTemp()}>
+                Upload files as reference clips!
             </button>
 
         </div>
