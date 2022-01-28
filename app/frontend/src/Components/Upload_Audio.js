@@ -6,7 +6,18 @@ import './Upload_Audio.css'
 import Waveform from 'react-audio-waveform';
 import Wavesurfer from 'wavesurfer.js'
 
+
+// Sometimes required to allow axios to make post requests to django
+
+// axios.defaults.xsrfCookieName = 'csrftoken'
+// axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
+
+
 function Upload_Audio() {
+
+    
+    // axios.defaults.headers.common["X-CSRFTOKEN"] = 'gPvOPnEwl4K7jFnYGucAwkW06M5RrJFRvEtwPMUNbylfnVsG0BOm5niJPd3COr9r';
+
 
     const [audioList, setAudioList] = useState(0);
 
@@ -72,7 +83,7 @@ function Upload_Audio() {
             formdata.append('file', uploadData[i]);
             axios({
                 method: 'post',
-                url: '/uploadfiles/',
+                url: '/uploadfiles',
                 data: formdata,
             }).then(
                 (response) => console.log(response))

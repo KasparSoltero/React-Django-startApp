@@ -22,6 +22,8 @@ from django.core.serializers.json import DjangoJSONEncoder
 from scipy import signal
 import scipy.io.wavfile as wave
 
+
+
 # Create your views here.
 
 class UnprocessedAudioView(viewsets.ModelViewSet):
@@ -37,6 +39,10 @@ class UnprocessedAudioView(viewsets.ModelViewSet):
 
     def __str__(self):
         return self.title
+
+
+def getModel(request):
+    return HttpResponse('succes')
 
 
 def UploadFilesView(request):

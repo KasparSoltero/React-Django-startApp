@@ -13,8 +13,10 @@ const decode = require('audio-decode');
 const buffer = require('audio-lena/wav');
 
 // Sometimes required to allow axios to make post requests to django
-axios.defaults.xsrfCookieName = 'csrftoken'
-axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
+// axios.defaults.xsrfCookieName = 'csrftoken'
+// axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
+// axios.defaults.headers.common["X-CSRFTOKEN"] = 'gPvOPnEwl4K7jFnYGucAwkW06M5RrJFRvEtwPMUNbylfnVsG0BOm5niJPd3COr9r';
+
 
 //initialise
 var original_wavesurfer = null;
@@ -91,13 +93,12 @@ function Analysis() {
 
         return (
             <div>
-                <br/>
-                <button className='uploadbutton' onClick={function() {
+                <button className='playpausebutton' onClick={function() {
                     if (original_wavesurfer != undefined) {
                         original_wavesurfer.playPause()
                     }
                 }}>Play/Pause original</button>
-                <button className='uploadbutton' onClick={function() {
+                <button className='playpausebutton' onClick={function() {
                     if (processed_wavesurfer != undefined) {
                         processed_wavesurfer.playPause()
                     }
@@ -384,15 +385,17 @@ function Analysis() {
                 {displayAudioSelect()}
             </div>            
 
+            <script src = 'https://unpkg.com/wavesurfer.js'></script>
+
             {playPauseButtons()}
 
-            <script src = 'https://unpkg.com/wavesurfer.js'></script>
 
             <div id='waveform-container' className='audio-display' onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} onPointerMove={handlePointerMove} onClick={()=>refreshTemp()}>
                 {addSections()}
 
                 <div id='waveform-info'>{waveforminfo()}</div>
             </div>
+
         </div>
     )
 }

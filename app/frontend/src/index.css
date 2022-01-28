@@ -38,4 +38,6 @@ code {
 .uploadbutton {
   height: 10%;
   width: 20%;
+  display: block;
+  margin: 20px;
 }
