@@ -26,7 +26,7 @@ function Menu() {
     
     return (
         <div className='menu-main'>
-            <ul class='nav'>
+            <ul className='nav'>
                 <li>
                     <a href='/'>Home</a>
                     <div className='select-bar'/>

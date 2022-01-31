@@ -46,7 +46,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    # 'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -138,5 +138,7 @@ CORS_ALLOW_CREDENTIALS = True
 MEDIA_ROOT = '../audio/assets/'
 MEDIA_URL = '/assets/'
 
+
 # CSRF_HEADER_NAME = "X-CSRFTOKEN"
 # CSRF_COOKIE_NAME = 'csrftoken'
+# CSRF_COOKIE_NAME = "XCSRF-TOKEN"

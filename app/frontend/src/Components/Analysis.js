@@ -1,21 +1,20 @@
-import { React, useEffect, useState } from 'react';
 import './Analysis.css';
-// import Sound from 'react-sound';
-// import { Spectrogram } from 'react-spectrogram';
+
+import { React, useEffect, useState } from 'react';
 import axios from 'axios';
-// import ReactAudioPlayer from 'react-audio-player'
 import Wavesurfer from 'wavesurfer.js';
 
 import SelectionList from './SelectionList.js'
 import Waveform from './Waveform.js'
 
+// import isChrome from 'react-device-detect'
+import { isChrome } from 'react-device-detect';
 
+//// currently unused packages:
+// import ReactAudioPlayer from 'react-audio-player'
 // var wavSpectro = require('wav-spectrogram');
-
-// const decode = require('audio-decode');
-// const buffer = require('audio-lena/wav');
-
-
+// import Sound from 'react-sound';
+// import { Spectrogram } from 'react-spectrogram';
 
 
 //initialise
@@ -37,7 +36,6 @@ function Analysis() {
     const [ highlightXInitial, setHighlightXInitial ] = useState(null);
     const [ draggingLeft, setDraggingLeft ] = useState(null)
     const [ highlightWidthInitial, setHighlightWidthInitial ] = useState(null)
-
 
     function updateAudioList() {
         axios
@@ -358,8 +356,8 @@ function Analysis() {
 
             <Waveform 
                 display='wave'
-                url={audioFile ? audioFile.denoisedFile : null}
-                wave_height={400}
+                url={audioFile? (audioFile.denoisedFile? (isChrome? audioFile.filedata : audioFile.denoisedFile) : null) : null}
+                wave_height={150}
                 style_options={{
                     marginLeft: '10px',
                 }}

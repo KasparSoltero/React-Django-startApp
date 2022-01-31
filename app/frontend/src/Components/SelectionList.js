@@ -2,7 +2,9 @@ import axios from 'axios'
 import { useState, useEffect } from 'react'
 import './SelectionList.css'
 
+
 axios.defaults.headers.common["X-CSRFTOKEN"] = 'gPvOPnEwl4K7jFnYGucAwkW06M5RrJFRvEtwPMUNbylfnVsG0BOm5niJPd3COr9r';
+
 
 function SelectionList(props) {
     //general selection list
@@ -27,7 +29,7 @@ function SelectionList(props) {
     
             axios({
                 method: 'post',
-                url: 'get-model',
+                url: 'get-model/',
                 data: form
             }).then((response) => {
                 setList(response.data)

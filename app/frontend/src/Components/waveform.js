@@ -1,10 +1,11 @@
 import './Waveform.css'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+
 import Wavesurfer from 'wavesurfer.js';
+import SpectrogramPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.spectrogram.min.js';
 
-
-let wavesurfer = 0
+let wavesurfer
 
 function Waveform(props) {
 
@@ -14,13 +15,8 @@ function Waveform(props) {
     //wave_height - integer height of display in px     default 100
     //style_options - css style options passed to the waveform container
 
-    useEffect(() => {
-        //triggers when any props change
 
-        console.log('updated')
-
-    }, [props])
-
+    // chrome can't open the denoised files saved by django for some reason
 
     useEffect(() => {
         //triggers when selected audio changes
@@ -41,16 +37,23 @@ function Waveform(props) {
             height: props.wave_height? props.wave_height : 100,
             waveColor: 'black',
             normalize: true,
+
+            // plugins: props.display==='spec'? [
+            //     SpectrogramPlugin.create({
+            //         wavesurfer: wavesurfer,
+            //         container: '#wavesurfer-container',
+            //         labels: true,
+            //     })
+            // ] : null
         });
 
         wavesurfer.load(props.url)
-
     }
 
     return (
         <div class='waveform-container' id='wavesurfer-container' style={props.style_options? {...props.style_options} : null}>
             <script src = 'https://unpkg.com/wavesurfer.js'></script>
-
+            <div id='test-denoised' style={{backgroundColor: 'rgb(100,0,0)'}}></div>
         </div>
     )
 }
