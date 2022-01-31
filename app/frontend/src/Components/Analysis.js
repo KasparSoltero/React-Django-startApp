@@ -7,15 +7,16 @@ import ReactAudioPlayer from 'react-audio-player'
 import Wavesurfer from 'wavesurfer.js';
 import wav from 'audio-lena/wav';
 
+import SelectionList from './SelectionList.js'
+import Waveform from './Waveform.js'
+
+
 var wavSpectro = require('wav-spectrogram');
 
 const decode = require('audio-decode');
 const buffer = require('audio-lena/wav');
 
-// Sometimes required to allow axios to make post requests to django
-// axios.defaults.xsrfCookieName = 'csrftoken'
-// axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
-// axios.defaults.headers.common["X-CSRFTOKEN"] = 'gPvOPnEwl4K7jFnYGucAwkW06M5RrJFRvEtwPMUNbylfnVsG0BOm5niJPd3COr9r';
+
 
 
 //initialise
@@ -47,45 +48,8 @@ function Analysis() {
     }
 
 
-    function handleAudioSelect(e) {
-        // adjusts the values of global 'audioFile' and 'audioList' variables
-        let id = e.target.id;
-        let audio = audioList.data.filter(audio=>audio.id==id)[0];
-        setAudioFile(audio);
-
-        audioList.data.map(function(audio) {
-            let htmlEl = document.getElementById(audio.id)
-            if (audio.id == id) {
-                // console.log('selecting:')
-                // console.log(htmlEl)
-                htmlEl.setAttribute('class', 'audio-select-file-selected')
-            } else {
-                htmlEl.setAttribute('class', 'audio-select-file')
-            }
-        })
-    }
-
-
-    function displayAudioSelect() {
-        if (audioList) {
-            return (
-                <div className='audio-select'>
-                    {audioList.data.map(function(audio) {
-                        return (
-                            <li id={audio.id}
-                                class='audio-select-file'
-                                onClick={(e)=>handleAudioSelect(e)}>
-                                <div id='test' className='select-audio-title'>
-                                    {audio.title}
-                                </div>
-                            </li>
-                        )
-                    })}
-                </div>
-            )
-        } else return (
-            <div>fetching audio list...</div>
-        )
+    function handleAudioSelection(selection) {
+        setAudioFile(selection.object)
     }
 
 
@@ -181,7 +145,7 @@ function Analysis() {
 
                 axios({
                     method: 'post',
-                    url: '/get-related-noiseclips/',
+                    url: '/get-related-noiseclips',
                     data: formdata
                 }).then(function(response) {
 
@@ -244,7 +208,7 @@ function Analysis() {
 
         axios({
             method: 'post',
-            url: '/update-highlight/',
+            url: '/update-highlight',
             data: formdata
         }).then((response) => {
             console.log(response)
@@ -373,28 +337,40 @@ function Analysis() {
         updateWaveforms()
     }
 
-    function refreshTemp2() {
-        updateAudioList()
-    }
-
     return (
         <div className='main-box'>
             
-            <div className='select-audio-container' onClick={()=>refreshTemp2()}>
-                Select audio file.
-                {displayAudioSelect()}
-            </div>            
+            <SelectionList 
+                list_type='backend-data' 
+                object='audiofile' 
+                selectable={true}
+                updateSelected={handleAudioSelection}
+                // display_audio={true}
+                display_title={true}
+                style_options={{
+                    width: '20%',
+                    // height: '100%',
+                }}
+            />
 
             <script src = 'https://unpkg.com/wavesurfer.js'></script>
 
-            {playPauseButtons()}
+            {/* {playPauseButtons()} */}
 
+            <Waveform 
+                display='wave'
+                url={audioFile ? audioFile.denoisedFile : null}
+                wave_height={400}
+                style_options={{
+                    marginLeft: '10px',
+                }}
+            />
 
-            <div id='waveform-container' className='audio-display' onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} onPointerMove={handlePointerMove} onClick={()=>refreshTemp()}>
+            {/* <div id='waveform-container' className='audio-display' onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} onPointerMove={handlePointerMove} onClick={()=>refreshTemp()}>
                 {addSections()}
 
                 <div id='waveform-info'>{waveforminfo()}</div>
-            </div>
+            </div> */}
 
         </div>
     )

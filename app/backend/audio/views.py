@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from rest_framework import viewsets
-from .serializers import UnprocessedAudioSerializer
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from .serializers import *
 from .models import *
 from django.views import View
 from django.http import HttpResponse
@@ -22,6 +24,9 @@ from django.core.serializers.json import DjangoJSONEncoder
 from scipy import signal
 import scipy.io.wavfile as wave
 
+from django.apps import apps
+
+from django.core import serializers
 
 
 # Create your views here.
@@ -41,8 +46,34 @@ class UnprocessedAudioView(viewsets.ModelViewSet):
         return self.title
 
 
+@api_view(['POST'])
 def getModel(request):
-    return HttpResponse('succes')
+    if request.method == 'POST':
+
+        model = apps.get_model(app_label="audio", model_name=request.POST['object'])
+
+        objects = model.objects.all()
+
+        serializer = AudioFileSerializer(objects, many=True)
+
+        if request.POST['return'] == 'list':
+            return Response(serializer.data)
+
+
+def readWav(request):
+    if request.method == 'POST':
+
+        #get wav file
+        name = request.POST['model'].split('.')[1]
+        model = apps.get_model(app_label="audio", model_name=name)
+        object = model.objects.get(pk=request.POST['pk'])
+
+        sr, data = wave.read(object.filedata)
+
+        print(sr)
+        print(data)
+
+        return HttpResponse(object.filedata)
 
 
 def UploadFilesView(request):

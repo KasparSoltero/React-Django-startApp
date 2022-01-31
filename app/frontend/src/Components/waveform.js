@@ -1,53 +1,58 @@
-import './waveform.css'
+import './Waveform.css'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+import Wavesurfer from 'wavesurfer.js';
 
-function waveform(inputs) {
-    //data: integer
 
-    if (!inputs) return <div>no inputs</div>
+let wavesurfer = 0
 
-    function bars() {
-        if (document.getElementById('waveform-container')) {
+function Waveform(props) {
 
-            // if (document.getElementById('bars-container')) {
-            //     let bars_container = document.getElementById('bars-container')
-            //     bars_container.remove()
-            // }
+    //display: 'wave' or 'spec'
+    //url - url of audio to display
 
-            let container = document.getElementById('waveform-container')
+    //wave_height - integer height of display in px     default 100
+    //style_options - css style options passed to the waveform container
 
-            if (container.children[0]) { //delete waveform
-                let children = container.children
-                console.log(children)
-                console.log(container.children)
-                for (let child of children) {
-                    console.log('removing:')
-                    console.log(child.style.cssText)
-                    child.remove()
-                }
-            }
+    useEffect(() => {
+        //triggers when any props change
 
-            let data = inputs.data
+        console.log('updated')
 
-            for (let int of data) {
-                let bar = document.createElement('div')
-                bar.className = 'bar'
+    }, [props])
 
-                bar.style.height = String(int) + 'px'
 
-                //center bars in container, should be driven by container height
-                bar.style.marginTop = String((100-int)/2) + 'px'
-                bar.style.marginBottom = String((100-int)/2) + 'px'
+    useEffect(() => {
+        //triggers when selected audio changes
 
-                container.appendChild(bar)
-            }
-        }
+        if (props.url) {updateWavesurfer()}
+
+    }, [props.url])
+
+
+    function updateWavesurfer() {
+
+        console.log('updating wavesurfers')
+        
+        if (wavesurfer) {wavesurfer.destroy()}
+        
+        wavesurfer = new Wavesurfer.create({
+            container: '#wavesurfer-container',
+            height: props.wave_height? props.wave_height : 100,
+            waveColor: 'black',
+            normalize: true,
+        });
+
+        wavesurfer.load(props.url)
+
     }
 
     return (
-        <div id='waveform-container'>
-            {bars()}
+        <div class='waveform-container' id='wavesurfer-container' style={props.style_options? {...props.style_options} : null}>
+            <script src = 'https://unpkg.com/wavesurfer.js'></script>
+
         </div>
     )
 }
 
-export default waveform
+export default Waveform

@@ -5,3 +5,8 @@ class UnprocessedAudioSerializer(serializers.ModelSerializer):
     class Meta:
         model = AudioFile
         fields = ('id', 'title', 'filedata', 'denoisedFile', 'duration')
+
+class AudioFileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AudioFile
+        fields = ('id', 'title', 'filedata', 'denoisedFile', 'duration')

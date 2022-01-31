@@ -4,51 +4,34 @@ import { useState, useEffect } from 'react';
 // import random from math.random
 
 import './Fourth.css'
-import waveform from './waveform.js'
+import Waveform from './Waveform.js'
 
 import SelectionList from './SelectionList.js'
 
 function Fourth() {
 
-    const [ input, setInput ] = useState(0)
-    const [ waveform_data, set_waveform_data ] = useState(null)
+    const [ waveform_data, setWaveformData ] = useState(null)
+
+    const [ selected_item, setSelectedItem ] = useState(null)
 
 
-    function updateInput() {
-        if (document.getElementById('testinput')) {
-            var temp = document.getElementById('testinput').value
-            temp = parseInt(temp)
-            setInput(temp)
-            
-            set_waveform_data({
-                'data': [50, 0, temp+1, 5, temp-1, 40, temp*2, 15, temp+10, 30, 25]
-            })
-
-        } else {
-            console.log('here2')
-        }
+    function handleListSelection(item) {
+        setSelectedItem(item)
+        setWaveformData(item.object.filedata)
     }
-
-    function testFunc() {
-        const csrf = document.cookie.match('(^|;)\\s*csrftoken\\s*=\\s*([^;]+)');
-        console.log(csrf ? csrf.pop() : '')
-    }
-
-
 
     return (
         <div className='main-box'>
-            <SelectionList list_type='backend-data' object='AudioFile'/>
-            {testFunc()}
-
-            <br/>
-            Input radius :
-            <input className='test-input' type='number' id='testinput' onChange={()=>updateInput()}/>
-            <br/>
-            <br/>
-            Input:  {input}
-            <br/>
-            Bar:    {waveform(waveform_data)}
+            <SelectionList 
+                list_type='backend-data' 
+                object='audiofile' 
+                selectable={true}
+                updateSelected={handleListSelection}
+                display_audio={true}
+                display_title={true}
+            />
+            <Waveform 
+                url={waveform_data}/>
         </div>
     )
 }

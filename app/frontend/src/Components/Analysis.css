@@ -1,5 +1,5 @@
 @import '../colors.css';
-
+/* 
 .upload-area {
     background-color: rgb(235, 77, 4);
     position: relative;
@@ -10,7 +10,7 @@
     width: 50%;
     height: 30%;
     text-align: center;
-}
+} */
 
 .audio-display {
     position: absolute;
@@ -21,7 +21,7 @@
     margin: 20px;
     text-align: center
 }
-
+/* 
 .select-audio-container {
     position: absolute;
     width: 20%;
@@ -31,16 +31,16 @@
     bottom: 50px;
 
     background-color: var(--grey-background-color)
-}
+} */
 
-.audio-select {
+/* .audio-select {
     margin: 5px 5px;
     height: max-content;
     display: block;
-    /* background-color: var(--highlight-color); */
-}
+    background-color: var(--highlight-color);
+} */
 
-.audio-select-file {
+/* .audio-select-file {
     padding: 5px 0px;
     display: block;
     float: none;
@@ -63,12 +63,7 @@
 .select-audio-title {
     margin: 0px 5px;
     pointer-events: none;
-}
-
-
-#waveform-container {
-    height: 90%;
-}
+} */
 
 #waveform-info {
     float: bottom;
