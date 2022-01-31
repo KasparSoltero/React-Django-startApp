@@ -346,23 +346,22 @@ function Analysis() {
                 display_title={true}
                 style_options={{
                     width: '20%',
-                    // height: '100%',
                 }}
             />
-
-            <script src = 'https://unpkg.com/wavesurfer.js'></script>
 
             {/* {playPauseButtons()} */}
-
-            <Waveform 
-                display='wave'
-                url={audioFile? (audioFile.denoisedFile? (isChrome? audioFile.filedata : audioFile.denoisedFile) : null) : null}
-                wave_height={150}
-                style_options={{
-                    marginLeft: '10px',
-                }}
-            />
-
+            <div className='analyse-audio-container'>
+                <Waveform 
+                    spectrogram={true}
+                    url={audioFile? (audioFile.denoisedFile? (isChrome? audioFile.filedata : audioFile.denoisedFile) : null) : null}
+                    wave_height={150}
+                    spec_height={'150px'}
+                    style_options={{
+                        // marginLeft: '10px',
+                    }}
+                />
+            </div>
+           
             {/* <div id='waveform-container' className='audio-display' onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} onPointerMove={handlePointerMove} onClick={()=>refreshTemp()}>
                 {addSections()}
 

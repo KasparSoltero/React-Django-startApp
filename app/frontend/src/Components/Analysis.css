@@ -1,16 +1,19 @@
 @import '../colors.css';
-/* 
-.upload-area {
-    background-color: rgb(235, 77, 4);
-    position: relative;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 5%;
-    margin-bottom: auto;
-    width: 50%;
-    height: 30%;
+
+.analyse-audio-container {
+    display: inline-block;
+
+    height: 90%;
+    width: 75%;
+    margin-left: 10px;
+
     text-align: center;
-} */
+
+    background-color: var(--second-color);
+    border-style: solid;
+    border-width: 1px;
+    border-color: var(--thin-line-color);
+}
 
 .audio-display {
     position: absolute;

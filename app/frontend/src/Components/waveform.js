@@ -5,7 +5,15 @@ import axios from 'axios'
 import Wavesurfer from 'wavesurfer.js';
 import SpectrogramPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.spectrogram.min.js';
 
+const colormap = require('colormap');
+
 let wavesurfer
+
+const colors = colormap({
+    colormap: 'plasma',
+    nshades: 256,
+    format: 'float'
+});
 
 function Waveform(props) {
 
@@ -21,7 +29,9 @@ function Waveform(props) {
     useEffect(() => {
         //triggers when selected audio changes
 
-        if (props.url) {updateWavesurfer()}
+        if (props.url) {
+            updateWavesurfer()
+        }
 
     }, [props.url])
 
@@ -33,29 +43,55 @@ function Waveform(props) {
         if (wavesurfer) {wavesurfer.destroy()}
         
         wavesurfer = new Wavesurfer.create({
-            container: '#wavesurfer-container',
-            height: props.wave_height? props.wave_height : 100,
+            container: '#wave',
+            height: props.height? props.height : 100,
             waveColor: 'black',
             normalize: true,
 
-            // plugins: props.display==='spec'? [
-            //     SpectrogramPlugin.create({
-            //         wavesurfer: wavesurfer,
-            //         container: '#wavesurfer-container',
-            //         labels: true,
-            //     })
-            // ] : null
+            plugins: props.spectrogram ? [
+                SpectrogramPlugin.create({
+                    wavesurfer: wavesurfer,
+                    container: '#spec',
+                    labels: false,
+                    colorMap: colors,
+                    style: {
+                        position: 'fixed',
+                    }
+                })
+            ] : []
         });
 
+        wavesurfer.on('ready', function () {
+            //adjust wavesurfer properties after generating waveform
+            
+            //adjust spectrogram layout
+            if (props.spectrogram) {
+                if (document.getElementsByTagName('spectrogram')[0]) {
+                    let sg = document.getElementsByTagName('spectrogram')[0]
+                    sg.style.overflow = 'unset'
+                    sg.style.display = 'block'
+                    sg.style.width = '0'
+                    sg.style.position = 'relative'
+                    sg.style.marginTop = '10px'
+
+                    for (let child of sg.children) {
+                        if (props.spec_height) {
+                            child.style.height = props.spec_height
+                        }
+                    }
+                }
+            }
+        })
+        
         wavesurfer.load(props.url)
     }
 
-    return (
-        <div class='waveform-container' id='wavesurfer-container' style={props.style_options? {...props.style_options} : null}>
-            <script src = 'https://unpkg.com/wavesurfer.js'></script>
-            <div id='test-denoised' style={{backgroundColor: 'rgb(100,0,0)'}}></div>
+    if (props.url) {return (
+        <div className='wavesurfer-container' style={props.style_options? {...props.style_options} : null}>
+            <div id='wave'/>
+            <div id='spec'/>
         </div>
-    )
+    )} else return <div className='invisible'/>
 }
 
 export default Waveform

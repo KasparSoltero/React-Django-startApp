@@ -1,16 +1,6 @@
 @import '../colors.css';
 
 
-.waveform-container {
-    display: inline-block;
-
-    height: 90%;
-    width: 75%;
-
-    text-align: center;
-
-    background-color: var(--second-color);
-    border-style: solid;
-    border-width: 1px;
-    border-color: var(--thin-line-color);
+.wavesurfer-container {
+    margin: 10px
 }
