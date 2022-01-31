@@ -1,20 +1,19 @@
 import { React, useEffect, useState } from 'react';
 import './Analysis.css';
-import Sound from 'react-sound';
-import { Spectrogram } from 'react-spectrogram';
+// import Sound from 'react-sound';
+// import { Spectrogram } from 'react-spectrogram';
 import axios from 'axios';
-import ReactAudioPlayer from 'react-audio-player'
+// import ReactAudioPlayer from 'react-audio-player'
 import Wavesurfer from 'wavesurfer.js';
-import wav from 'audio-lena/wav';
 
 import SelectionList from './SelectionList.js'
 import Waveform from './Waveform.js'
 
 
-var wavSpectro = require('wav-spectrogram');
+// var wavSpectro = require('wav-spectrogram');
 
-const decode = require('audio-decode');
-const buffer = require('audio-lena/wav');
+// const decode = require('audio-decode');
+// const buffer = require('audio-lena/wav');
 
 
 

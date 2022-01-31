@@ -1,9 +1,0 @@
-{
-  "dependencies": {
-    "audio-decode": "^1.4.0",
-    "audio-lena": "^2.1.1",
-    "colormap": "^2.3.2",
-    "react-audio-player": "^0.17.0",
-    "wav-spectrogram": "^0.0.4"
-  }
-}

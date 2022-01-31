@@ -19,9 +19,9 @@ function SelectionList(props) {
     const [ list, setList ] = useState(null)
 
     useEffect(() => {
-        if (props.list_type=='backend-data') {
+        if (props.list_type==='backend-data') {
         
-            let form = new FormData
+            let form = (new FormData)
             form.append('object', props.object)
             form.append('return', 'list')
     
@@ -41,7 +41,7 @@ function SelectionList(props) {
 
         //send selected item to parent component
         let pk = e.currentTarget.getAttribute('pk')
-        let selected_db_object = list.find((obj)=>String(obj.id)==pk)
+        let selected_db_object = list.find((obj) => String(obj.id)===pk)
 
         let form = {
             html_selected: e.currentTarget,
@@ -52,7 +52,7 @@ function SelectionList(props) {
 
         //update visuals to show selected component
         for (let el of document.getElementsByClassName('list-element')) {
-            el==e.currentTarget? el.className = 'list-element selected' : el.className = 'list-element selectable'
+            el===e.currentTarget? el.className = 'list-element selected' : el.className = 'list-element selectable'
         }
     }
 
