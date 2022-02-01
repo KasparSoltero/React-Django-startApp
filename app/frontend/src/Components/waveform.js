@@ -62,36 +62,37 @@ function Waveform(props) {
         });
 
         wavesurfer.on('ready', function () {
-            //adjust wavesurfer properties after generating waveform
-            
-            //adjust spectrogram layout
-            if (props.spectrogram) {
-                if (document.getElementsByTagName('spectrogram')[0]) {
-                    let sg = document.getElementsByTagName('spectrogram')[0]
-                    sg.style.overflow = 'unset'
-                    sg.style.display = 'block'
-                    sg.style.width = '0'
-                    sg.style.position = 'relative'
-                    sg.style.marginTop = '10px'
+            //adjust spectrogram layout to display correctly
+            if (document.getElementsByTagName('spectrogram')[0]) {
+                let sg = document.getElementsByTagName('spectrogram')[0]
 
-                    for (let child of sg.children) {
-                        if (props.spec_height) {
-                            child.style.height = props.spec_height
-                        }
+                sg.style.overflow = 'unset'
+                sg.style.width = '0'
+                sg.style.position = 'relative'
+                sg.style.marginTop = '10px'
+
+                //height of spectrogram element is adjusted if provided
+                if (props.spec_height) {sg.style.height = props.spec_height}
+                for (let child of sg.children) {
+                    if (props.spec_height) {
+                        child.style.height = props.spec_height
                     }
                 }
             }
+
+            //call provided callOnReady function
+            if (props.callOnReady) {props.callOnReady()}
         })
         
         wavesurfer.load(props.url)
     }
 
     if (props.url) {return (
-        <div className='wavesurfer-container' style={props.style_options? {...props.style_options} : null}>
+        <div style={props.style_options? {...props.style_options} : null}>
             <div id='wave'/>
             <div id='spec'/>
         </div>
-    )} else return <div className='invisible'/>
+    )} else return <div/>
 }
 
 export default Waveform

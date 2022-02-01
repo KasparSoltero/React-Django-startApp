@@ -2,6 +2,7 @@ from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from rest_framework import serializers
 from .serializers import *
 from .models import *
 from django.views import View
@@ -26,10 +27,18 @@ import scipy.io.wavfile as wave
 
 from django.apps import apps
 
-from django.core import serializers
+# from django.core import serializers
 
 
 # Create your views here.
+
+def getGenericSerializer(model_arg):
+    class GenericSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = model_arg
+            fields = '__all__'
+
+    return GenericSerializer
 
 class UnprocessedAudioView(viewsets.ModelViewSet):
     serializer_class = UnprocessedAudioSerializer
@@ -48,15 +57,23 @@ class UnprocessedAudioView(viewsets.ModelViewSet):
 
 @api_view(['POST'])
 def getModel(request):
+    #returns an object or list of objects from a specified model
     if request.method == 'POST':
 
         model = apps.get_model(app_label="audio", model_name=request.POST['object'])
-
-        objects = model.objects.all()
-
-        serializer = AudioFileSerializer(objects, many=True)
+        serializer = getGenericSerializer(model)
 
         if request.POST['return'] == 'list':
+
+            objects = model.objects.all()
+            serializer = serializer(objects, many=True)
+            return Response(serializer.data)
+
+        elif request.POST['return'] == 'filtered_list':
+
+            if request.POST['object']=='Noiseclip': #need more general solution
+                obj = model.objects.filter(parentAudio_id=request.POST['id'])
+            serializer = serializer(obj, many=True)
             return Response(serializer.data)
 
 
@@ -283,6 +300,7 @@ def addReferenceTemp(request):
         return HttpResponse('success')
 
 
+@api_view(['POST'])
 def updateHighlight(request):
     if request.method == 'POST':
 
@@ -295,6 +313,7 @@ def updateHighlight(request):
         return HttpResponse('edited highlight')
 
 
+@api_view(['POST'])
 def getRelatedNoiseclips(request):
     if request.method == 'POST':
 

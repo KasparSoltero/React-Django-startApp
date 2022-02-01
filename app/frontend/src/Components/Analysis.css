@@ -72,3 +72,8 @@
     float: bottom;
     bottom: 10px;
 }
+
+.wavesurfer-container {
+    margin: 10px;
+    position: relative;
+}

@@ -1,11 +1,13 @@
 import './Analysis.css';
 
 import { React, useEffect, useState } from 'react';
+import ReactDOM from 'react-dom';
 import axios from 'axios';
 import Wavesurfer from 'wavesurfer.js';
 
 import SelectionList from './SelectionList.js'
 import Waveform from './Waveform.js'
+import Highlights from './Highlights.js'
 
 // import isChrome from 'react-device-detect'
 import { isChrome } from 'react-device-detect';
@@ -16,6 +18,7 @@ import { isChrome } from 'react-device-detect';
 // import Sound from 'react-sound';
 // import { Spectrogram } from 'react-spectrogram';
 
+axios.defaults.headers.common["X-CSRFTOKEN"] = 'gPvOPnEwl4K7jFnYGucAwkW06M5RrJFRvEtwPMUNbylfnVsG0BOm5niJPd3COr9r';
 
 //initialise
 var original_wavesurfer = null;
@@ -28,14 +31,8 @@ function Analysis() {
     const [ audioFile, setAudioFile ] = useState(null);
     const [ audioList, setAudioList ] = useState(0);
 
-    //things for highlight selection / editing, should move to different script
-    const [ selectedHighlight, setSelectedHighlight ] = useState(null);
-    const [ isDragging, setIsDragging] = useState(false);
-    const [ xInitial, setXInitial ] = useState(null)
-    const [ xPos, setXPos ] = useState(null);
-    const [ highlightXInitial, setHighlightXInitial ] = useState(null);
-    const [ draggingLeft, setDraggingLeft ] = useState(null)
-    const [ highlightWidthInitial, setHighlightWidthInitial ] = useState(null)
+    const [ wavesurfer_ready, setWavesurferReady ] = useState(false);
+
 
     function updateAudioList() {
         axios
@@ -80,7 +77,6 @@ function Analysis() {
             }
 
             if (!sameid) {
-                setSelectedHighlight(null)
 
                 if (document.getElementById('original-waveform')) {
                     var element = document.getElementById('original-waveform')
@@ -132,207 +128,26 @@ function Analysis() {
     }
 
 
-    function addSections() {
-        if(document.getElementById('processed-waveform') && audioFile) {
+    // function waveforminfo() {
 
-            if (!document.getElementsByClassName('highlight')[0]) {
+    //     function highlightSelected() {
+    //         if (selectedHighlight) {
+    //             return (
+    //                 <div>
+    //                     selected highlight:__
+    //                     {String(selectedHighlight.call) }
+    //                 </div>
+    //             )
+    //         } else return <div>no highlight selected</div>
+    //     }
 
-                const formdata = new FormData()
-                formdata.append('id', audioFile.id)
+    //     if (document.getElementsByClassName('highlight')[0]) {
+    //         return (
+    //             <div>{highlightSelected()}</div>
+    //         )
+    //     }
+    // }
 
-                axios({
-                    method: 'post',
-                    url: '/get-related-noiseclips',
-                    data: formdata
-                }).then(function(response) {
-
-                    const start = []
-                    const end = []
-                    const ids = []
-                    const duration = parseFloat(audioFile.duration)
-
-                    for(let i=0;i<response.data.length;i++) {
-                        start.push(parseFloat(response.data[i]['startTime']))
-                        end.push(parseFloat(response.data[i]['endTime']))
-                        ids.push(response.data[i]['id'])
-                    }
-                    for (let i=0;i<start.length;i++) {
-                        var highlight = document.createElement("div")
-                        highlight.className = 'highlight'
-
-                        let color = response.data[i]['color']
-                        console.log(color)
-            
-                        var wave = document.getElementById('processed-waveform')
-                        wave.appendChild(highlight)
-
-                        let relStart = Math.round(100*start[i] / duration)
-                        let relEnd = Math.round(100*end[i]/duration)
-
-                        highlight.style.width = String(relEnd-relStart) + "%";
-                        highlight.style.height = '100px';
-                        highlight.style.backgroundColor = color;
-                        highlight.style.marginLeft = String(relStart) + "%";
-                        highlight.style.marginTop = String(-(waveform_height+100)/2)+'px'; //100 should be driven by marginTop
-                        highlight.style.marginBottom = '50px'; //should be driven, diff between marginTop and height
-                        highlight.style.position = 'relative'; //required to bring highlight to front of page
-                        highlight.highlight_id = ids[i]
-
-                        highlight.call = response.data[i]['referenceTitle']
-                        console.log('here')
-                        console.log(response.data[i]['referenceTitle'])
-                    }
-                })
-            }
-        }
-    }
-
-
-    function updateHighlight() {
-        // edit highlight's stored times in the database based on the user's edits
-
-        let hl = selectedHighlight
-
-        const duration = parseFloat(audioFile.duration)
-
-        let newStart = Math.round(100*duration *  hl.offsetLeft / hl.offsetParent.offsetWidth) / 100
-        let newEnd = Math.round(100*duration * (hl.offsetWidth + hl.offsetLeft) / hl.offsetParent.offsetWidth) / 100
-
-        let formdata = new FormData
-        formdata.append('id', selectedHighlight.highlight_id)
-        formdata.append('start', newStart)
-        formdata.append('end', newEnd)
-
-        axios({
-            method: 'post',
-            url: '/update-highlight',
-            data: formdata
-        }).then((response) => {
-            console.log(response)
-        })
-    }
-
-
-    function handleHighlightSelect(e) {
-
-        function changeAlpha(color, newAlpha) {
-            //takes rgba(a,b,c,d) color and alters alpha value
-
-            let split = color.split(',')
-            return(split[0]+','+split[1]+','+split[2]+','+String(newAlpha)+')')
-        }
-
-        //deselect other clips
-        let hls = document.getElementsByClassName('highlight')
-        for (let hl of hls) {
-            if (!(hl == e.target)) {
-                hl.style.backgroundColor = changeAlpha(hl.style.backgroundColor, 0.5)
-            }
-        }
-
-        //deselect or change selected highlight clip
-        let hl = e.target
-        if (!(hl == selectedHighlight)) {
-            hl.style.backgroundColor = changeAlpha(hl.style.backgroundColor, 0.8)
-            setSelectedHighlight(hl)
-        } else {
-            hl.style.backgroundColor = changeAlpha(hl.style.backgroundColor, 0.5)
-            setSelectedHighlight(null)
-        }
-    }
-
-
-    function handleMouseDown(e) {
-        if ((e.target.className == 'highlight') && selectedHighlight) {
-            //initial x position for dragging
-            if (xInitial == null) {
-                setXInitial(e.pageX)
-                setHighlightXInitial(selectedHighlight.offsetLeft)
-                setHighlightWidthInitial(selectedHighlight.offsetWidth)
-            }
-            handleHighlightDrag(e)
-        }
-    }
-
-
-    function handleHighlightDrag(e) {
-        
-        setIsDragging(true)
-
-        let mouse = e.pageX - selectedHighlight.offsetParent.offsetLeft
-        let left = selectedHighlight.offsetLeft
-        let right = selectedHighlight.offsetLeft + selectedHighlight.offsetWidth
-
-        //drag either left or right side of highlight, depending on which side is closer
-        if (Math.abs(mouse - left) > Math.abs(right - mouse)) {
-            setDraggingLeft(false)
-        } else setDraggingLeft(true)
-    }
-
-
-    function handleMouseUp(e) {
-        if (!(xInitial) || (xInitial==e.pageX)) {// if mouse did not move between mousedown & mouseup
-            
-            if (e.target.className == 'highlight') {
-                handleHighlightSelect(e)
-            }
-            setIsDragging(false)
-
-        } else if (isDragging) { // if mouse was dragging
-
-            setIsDragging(false)
-            setXPos(null)
-            setDraggingLeft(null)
-
-            updateHighlight()
-        }
-        setXInitial(null)
-        setHighlightXInitial(null)
-        setHighlightWidthInitial(null)
-
-    }
-
-
-    function handlePointerMove(e) {
-        if (isDragging && xInitial) {
-
-            setXPos(e.pageX - xInitial)
-            if (draggingLeft == true) {
-                selectedHighlight.style.marginLeft = String(highlightXInitial + xPos) + 'px'
-                selectedHighlight.style.width = String(highlightWidthInitial - xPos) + 'px'
-            } else if (draggingLeft == false) {
-                selectedHighlight.style.width = String(highlightWidthInitial + xPos) + 'px'
-            }
-            console.log(xPos)
-            console.log(selectedHighlight.style.width)
-        }
-    }
-
-
-    function waveforminfo() {
-
-        function highlightSelected() {
-            if (selectedHighlight) {
-                return (
-                    <div>
-                        selected highlight:__
-                        {String(selectedHighlight.call) }
-                    </div>
-                )
-            } else return <div>no highlight selected</div>
-        }
-
-        if (document.getElementsByClassName('highlight')[0]) {
-            return (
-                <div>{highlightSelected()}</div>
-            )
-        }
-    }
-
-
-    function refreshTemp() {
-        updateWaveforms()
-    }
 
     return (
         <div className='main-box'>
@@ -350,23 +165,20 @@ function Analysis() {
             />
 
             {/* {playPauseButtons()} */}
-            <div className='analyse-audio-container'>
-                <Waveform 
-                    spectrogram={true}
-                    url={audioFile? (audioFile.denoisedFile? (isChrome? audioFile.filedata : audioFile.denoisedFile) : null) : null}
-                    wave_height={150}
-                    spec_height={'150px'}
-                    style_options={{
-                        // marginLeft: '10px',
-                    }}
-                />
-            </div>
-           
-            {/* <div id='waveform-container' className='audio-display' onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} onPointerMove={handlePointerMove} onClick={()=>refreshTemp()}>
-                {addSections()}
 
-                <div id='waveform-info'>{waveforminfo()}</div>
-            </div> */}
+            <div className='analyse-audio-container'>
+                <div className='wavesurfer-container'>
+                    <Waveform 
+                        spectrogram={true}
+                        url={audioFile? (audioFile.denoisedFile? (isChrome? audioFile.filedata : audioFile.denoisedFile) : null) : null}
+                        wave_height={150}
+                        spec_height={'150px'}
+                        style_options={{
+                        }}
+                    />
+                    {audioFile ? <Highlights audioFile={audioFile}/> : <div/>}
+                </div>
+            </div>
 
         </div>
     )
