@@ -6,15 +6,13 @@ import './Upload_Audio.css'
 import Waveform from 'react-audio-waveform';
 import Wavesurfer from 'wavesurfer.js'
 
+import SelectionList from './SelectionList.js'
 
-axios.defaults.headers.common["X-CSRFTOKEN"] = 'gPvOPnEwl4K7jFnYGucAwkW06M5RrJFRvEtwPMUNbylfnVsG0BOm5niJPd3COr9r';
+import getCSRF from './getCSRF.js'
+axios.defaults.headers.common["X-CSRFTOKEN"] = getCSRF();
 
 
 function Upload_Audio() {
-
-    
-    // axios.defaults.headers.common["X-CSRFTOKEN"] = 'gPvOPnEwl4K7jFnYGucAwkW06M5RrJFRvEtwPMUNbylfnVsG0BOm5niJPd3COr9r';
-
 
     const [audioList, setAudioList] = useState(0);
 
@@ -153,15 +151,30 @@ function Upload_Audio() {
 
     return (
         <div className='main-box'>
-            ....testing file upload! <br/>
+
+            <SelectionList 
+                list_type='backend-data' 
+                object={['AudioFile', 'AudioClip']}
+                selectable={false}
+                // updateSelected={}
+                // display_audio={true}
+                display_title={true}
+                style_options={{
+                    width: '40%',
+                    position: 'absolute',
+                    right: '0',
+                    top: '0',
+                    bottom: '0',
+                }}
+            />
             
-            <div className='audio-container'>
+            {/* <div className='audio-container'>
                 <button onClick={()=>updateAudioList()}>. Refresh</button>
                 <button onClick={()=>denoiseNewAudios()}>. Denoise</button>
                 <button onClick={()=>convolveNewAudios()}>. Convolve</button>
 
                 {displayAudioList()}
-            </div>            
+            </div>             */}
 
             <input name='uploadFiles' type='file' id='uploadFiles' multiple/>
             <button className='uploadbutton' onClick={() => uploadFilesToDB()}>

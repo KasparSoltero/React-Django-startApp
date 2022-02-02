@@ -71,8 +71,8 @@ def getModel(request):
 
         elif request.POST['return'] == 'filtered_list':
 
-            if request.POST['object']=='Noiseclip': #need more general solution
-                obj = model.objects.filter(parentAudio_id=request.POST['id'])
+            if request.POST['object']=='AudioClip': #need more general solution
+                obj = model.objects.filter(parent_audio_id=request.POST['id'])
             serializer = serializer(obj, many=True)
             return Response(serializer.data)
 
@@ -304,10 +304,10 @@ def addReferenceTemp(request):
 def updateHighlight(request):
     if request.method == 'POST':
 
-        hl = Noiseclip.objects.get(pk=request.POST['id'])
+        hl = AudioClip.objects.get(pk=request.POST['id'])
 
-        hl.startTime = request.POST['start']
-        hl.endTime = request.POST['end']
+        hl.start_time = request.POST['start']
+        hl.end_time = request.POST['end']
         hl.save()
 
         return HttpResponse('edited highlight')

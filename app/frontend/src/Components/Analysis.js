@@ -18,7 +18,8 @@ import { isChrome } from 'react-device-detect';
 // import Sound from 'react-sound';
 // import { Spectrogram } from 'react-spectrogram';
 
-axios.defaults.headers.common["X-CSRFTOKEN"] = 'gPvOPnEwl4K7jFnYGucAwkW06M5RrJFRvEtwPMUNbylfnVsG0BOm5niJPd3COr9r';
+import getCSRF from './getCSRF.js'
+axios.defaults.headers.common["X-CSRFTOKEN"] = getCSRF();
 
 //initialise
 var original_wavesurfer = null;
@@ -32,14 +33,6 @@ function Analysis() {
     const [ audioList, setAudioList ] = useState(0);
 
     const [ wavesurfer_ready, setWavesurferReady ] = useState(false);
-
-
-    function updateAudioList() {
-        axios
-        .get("/api/unprocessedaudios/")
-        .then((res) => setAudioList(res))
-        .catch((err) => console.log(err));
-    }
 
 
     function handleAudioSelection(selection) {
@@ -66,101 +59,19 @@ function Analysis() {
     }
 
 
-    function updateWaveforms() {
-
-        if (audioFile && audioFile.denoisedFile && audioFile.id) {
-
-            var sameid = false
-            if (document.getElementById('original-waveform')) {
-                var element = document.getElementById('original-waveform')
-                if (element.audio_id == audioFile.id) {sameid = true}
-            }
-
-            if (!sameid) {
-
-                if (document.getElementById('original-waveform')) {
-                    var element = document.getElementById('original-waveform')
-                    if (element.audio_id == audioFile.id) {console.log('same')}
-    
-                    element.remove()}
-                if (document.getElementById('processed-waveform')) {
-                    var element = document.getElementById('processed-waveform')
-                    element.remove()
-                }
-    
-                var originalWaveform = document.createElement("div");
-                originalWaveform.setAttribute('id', 'original-waveform')
-                originalWaveform.audio_id = audioFile.id
-    
-                var processedWaveform = document.createElement("div")//, { onClick: (e) => handleHighlightDrag(e)});
-                processedWaveform.setAttribute('id', 'processed-waveform')
-    
-    
-                var domE2 = document.getElementById("waveform-container")
-                domE2.appendChild(originalWaveform)
-                domE2.appendChild(processedWaveform)
-    
-                original_wavesurfer = new Wavesurfer.create({
-                    container: '#original-waveform',
-                    height: waveform_height,
-                    waveColor: 'black'
-                });
-    
-                if (original_wavesurfer) {
-                    original_wavesurfer.load(audioFile.filedata)
-                }
-    
-                processed_wavesurfer = new Wavesurfer.create({
-                    container: '#processed-waveform',
-                    height: 200,
-                    waveColor: 'blue'
-                })
-        
-                if (audioFile.denoisedFile) {
-                    if (processed_wavesurfer) {
-                        processed_wavesurfer.load(audioFile.denoisedFile)
-                    }
-                }
-            }
-        } else {
-            console.log('no audio file selected')
-        }
-    }
-
-
-    // function waveforminfo() {
-
-    //     function highlightSelected() {
-    //         if (selectedHighlight) {
-    //             return (
-    //                 <div>
-    //                     selected highlight:__
-    //                     {String(selectedHighlight.call) }
-    //                 </div>
-    //             )
-    //         } else return <div>no highlight selected</div>
-    //     }
-
-    //     if (document.getElementsByClassName('highlight')[0]) {
-    //         return (
-    //             <div>{highlightSelected()}</div>
-    //         )
-    //     }
-    // }
-
-
     return (
         <div className='main-box'>
             
             <SelectionList 
                 list_type='backend-data' 
-                object='audiofile' 
+                object={['audiofile']}
                 selectable={true}
                 updateSelected={handleAudioSelection}
                 // display_audio={true}
                 display_title={true}
                 style_options={{
                     width: '20%',
+                    height: '100%',
                 }}
             />
 

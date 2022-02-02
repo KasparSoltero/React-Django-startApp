@@ -2,15 +2,15 @@ from django.contrib import admin
 from .models import *
 
 class AudioFileAdmin(admin.ModelAdmin):
-    list_display = ('title', 'filedata', 'denoisedFile', 'duration')
+    list_display = ('title', 'filedata', 'denoised_filedata', 'duration')
 
-class NoiseclipAdmin(admin.ModelAdmin):
-    list_display = ('title', 'parentAudio', 'audiofile', 'startTime', 'endTime')
+class AudioClipAdmin(admin.ModelAdmin):
+    list_display = ('title', 'filedata', 'parent_audio', 'start_time', 'end_time', 'reference_audio', 'use_as_ref', 'animal')
 
-class ReferenceclipAdmin(admin.ModelAdmin):
-    list_display = ('title', 'audiofile')
+class AnimalAdmin(admin.ModelAdmin):
+    list_display = ('title', 'color')
 # Register your models here.
 
 admin.site.register(AudioFile, AudioFileAdmin)
-admin.site.register(Noiseclip, NoiseclipAdmin)
-admin.site.register(Referenceclip, ReferenceclipAdmin)
+admin.site.register(AudioClip, AudioClipAdmin)
+admin.site.register(Animal, AnimalAdmin)

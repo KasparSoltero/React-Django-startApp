@@ -37,8 +37,6 @@ function Waveform(props) {
 
 
     function updateWavesurfer() {
-
-        console.log('updating wavesurfers')
         
         if (wavesurfer) {wavesurfer.destroy()}
         

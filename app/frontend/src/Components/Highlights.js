@@ -5,8 +5,6 @@ function Highlights(props) {
 
     const [ noiseclips, setNoiseclips ] = useState(null)
 
-
-    //things for highlight selection / editing, should move to different script
     const [ selectedHighlight, setSelectedHighlight ] = useState(null);
     const [ isDragging, setIsDragging] = useState(false);
     const [ xInitial, setXInitial ] = useState(null)
@@ -17,7 +15,6 @@ function Highlights(props) {
 
 
     useEffect(() => {
-        console.log('tolato')
         updateNoiseclips()
         setSelectedHighlight(null)
     }, [props])
@@ -77,7 +74,7 @@ function Highlights(props) {
         let hls = document.getElementsByClassName('highlight')
         for (let hl of hls) {
             if (!(hl == e.target)) {
-                hl.style.backgroundColor = changeAlpha(hl.style.backgroundColor, 0.5)
+                hl.style.backgroundColor = changeAlpha(hl.style.backgroundColor, 0.3)
             }
         }
 
@@ -87,7 +84,7 @@ function Highlights(props) {
             hl.style.backgroundColor = changeAlpha(hl.style.backgroundColor, 0.8)
             setSelectedHighlight(hl)
         } else {
-            hl.style.backgroundColor = changeAlpha(hl.style.backgroundColor, 0.5)
+            hl.style.backgroundColor = changeAlpha(hl.style.backgroundColor, 0.3)
             setSelectedHighlight(null)
         }
     }
@@ -156,7 +153,6 @@ function Highlights(props) {
             }
         }
     }
-
 
 
     return (

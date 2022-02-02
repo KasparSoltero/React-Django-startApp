@@ -14,6 +14,10 @@ function Fourth() {
 
     const [ selected_item, setSelectedItem ] = useState(null)
 
+    useEffect(() => {
+        console.log('here')
+    })
+
 
     function handleListSelection(item) {
         setSelectedItem(item)
@@ -24,14 +28,19 @@ function Fourth() {
         <div className='main-box'>
             <SelectionList 
                 list_type='backend-data' 
-                object='audiofile' 
+                object={['AudioFile', 'AudioClip', 'Animal']}
                 selectable={true}
                 updateSelected={handleListSelection}
                 display_audio={true}
                 display_title={true}
+                // style_options={{
+                //     width: '40%',
+                //     position: 'absolute',
+                //     right: '0',
+                //     top: '0',
+                //     bottom: '0',
+                // }}
             />
-            <Waveform 
-                url={waveform_data}/>
         </div>
     )
 }
