@@ -29,8 +29,8 @@ const waveform_height = 200;
 
 function Analysis() {
 
-    const [ audioFile, setAudioFile ] = useState(null);
-    const [ audioList, setAudioList ] = useState(0);
+    const [ audio_file, setAudioFile ] = useState(null);
+    const [ audio_list, setAudioList ] = useState(0);
 
     const [ wavesurfer_ready, setWavesurferReady ] = useState(false);
 
@@ -81,13 +81,14 @@ function Analysis() {
                 <div className='wavesurfer-container'>
                     <Waveform 
                         spectrogram={true}
-                        url={audioFile? (audioFile.denoisedFile? (isChrome? audioFile.filedata : audioFile.denoisedFile) : null) : null}
+                        //if chrome is used, visuals are generated from original audio
+                        filedata={audio_file? (audio_file.denoised_filedata? (isChrome? audio_file.filedata : audio_file.denoised_filedata) : null) : null}
                         wave_height={150}
                         spec_height={'150px'}
                         style_options={{
                         }}
                     />
-                    {audioFile ? <Highlights audioFile={audioFile}/> : <div/>}
+                    {audio_file ? <Highlights audio_file={audio_file}/> : <div/>}
                 </div>
             </div>
 

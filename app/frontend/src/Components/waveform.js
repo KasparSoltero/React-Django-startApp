@@ -18,7 +18,7 @@ const colors = colormap({
 function Waveform(props) {
 
     //display: 'wave' or 'spec'
-    //url - url of audio to display
+    //filedata - url of audio to display
 
     //wave_height - integer height of display in px     default 100
     //style_options - css style options passed to the waveform container
@@ -29,11 +29,11 @@ function Waveform(props) {
     useEffect(() => {
         //triggers when selected audio changes
 
-        if (props.url) {
+        if (props.filedata) {
             updateWavesurfer()
         }
 
-    }, [props.url])
+    }, [props.filedata])
 
 
     function updateWavesurfer() {
@@ -82,10 +82,10 @@ function Waveform(props) {
             if (props.callOnReady) {props.callOnReady()}
         })
         
-        wavesurfer.load(props.url)
+        wavesurfer.load(props.filedata)
     }
 
-    if (props.url) {return (
+    if (props.filedata) {return (
         <div style={props.style_options? {...props.style_options} : null}>
             <div id='wave'/>
             <div id='spec'/>

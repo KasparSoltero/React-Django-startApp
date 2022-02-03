@@ -43,25 +43,34 @@ function Upload_Audio() {
     function convolveNewAudios() {
         //Convolve unprocessed audio files
 
-        if (audioList) {
-            audioList.data.map(function(audio) {
-                console.log('convolving audio file:')
-                console.log(audio)
-                // if (!audio.convolveFile) {
-                //     console.log('here')
+        //get all audio files
+        let form = (new FormData)
+        form.append('object', 'AudioFile')
+        form.append('return', 'list')
+        form.append('add_related_models', 'audioclip')
 
-                const formdata =  new FormData();
-                formdata.append('id', audio.id)
+        axios({
+            method: 'post',
+            url: 'get-model/',
+            data: form
+        }).then((response) => {
+            let audio_files = response.data[0]
+            let related_audioclips = response.data[1]
+            //check if each one has been convolved
+            for (let i=0; i<audio_files.length; i++) {
+                if (related_audioclips[i] === 'audio.AudioClip.None') {
+                    //convolve if not
+                    const form =  new FormData();
+                    form.append('id', audio_files[i].id)
 
-                axios({
-                    method: 'post',
-                    url: '/convolve-audio/',
-                    data: formdata
-                }).then((response) => console.log(response))
-
-                // } else console.log('already processed')
-            })
-        }
+                    axios({
+                        method: 'post',
+                        url: '/convolve-audio/',
+                        data: form
+                    }).then((response) => console.log(response))
+                }
+            }
+        })
     }
 
 
@@ -106,51 +115,13 @@ function Upload_Audio() {
     }
 
 
-    function updateAudioList() {
-        axios
-        .get("/api/unprocessedaudios/")
-        .then((response) => setAudioList(response))
-        .catch((err) => console.log(err));
-    }
-
-
-    function displayAudioList() {
-        if (audioList) {
-
-            function isDenoised(audio) {
-                console.log(audio)
-                if (audio.denoisedFile) {
-                    if (false) {
-                        return 'convolved'
-                    } else return 'denoised'
-                } else return 'not-denoised'
-            }
-            return (
-                <div className='audio-list'>
-                    {audioList.data.map(function(audio) {
-                        return (
-                            <li id={audio.id}
-                                class='audio-file'
-                                >
-                                <div id='test' className='audio-title'>
-                                    {audio.title}
-                                </div>
-                                <div id='process-stage'>
-                                    <div id={isDenoised(audio)}/>
-                                </div>
-                            </li>
-                        )
-                    })}
-                </div>
-            )
-        } else return (
-            <div>fetching audio list...</div>
-        )
-    }
-
-
     return (
         <div className='main-box'>
+
+            <div className='process-audios-container'>
+                <button className='process-audios-button' onClick={()=>denoiseNewAudios()}>Denoise</button>
+                <button className='process-audios-button' onClick={()=>convolveNewAudios()}>Convolve</button>
+            </div>
 
             <SelectionList 
                 list_type='backend-data' 
@@ -163,19 +134,22 @@ function Upload_Audio() {
                     width: '40%',
                     position: 'absolute',
                     right: '0',
-                    top: '0',
-                    bottom: '0',
+                    top: '40px',
+                    bottom: '0px',
+                    height: '85%',
+                }}
+                display_data={{
+                    bool: [{
+                        data: 'denoised_filedata',
+                        title: 'Denoised',
+                    }, {
+                        data: 'audioclip_set',
+                        title: 'tomato',
+                        colors: ['rgb(100,0,200)','rgb(0,200,100)']
+                    }],
                 }}
             />
             
-            {/* <div className='audio-container'>
-                <button onClick={()=>updateAudioList()}>. Refresh</button>
-                <button onClick={()=>denoiseNewAudios()}>. Denoise</button>
-                <button onClick={()=>convolveNewAudios()}>. Convolve</button>
-
-                {displayAudioList()}
-            </div>             */}
-
             <input name='uploadFiles' type='file' id='uploadFiles' multiple/>
             <button className='uploadbutton' onClick={() => uploadFilesToDB()}>
                 Upload files to database!

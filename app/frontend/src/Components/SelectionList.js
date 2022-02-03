@@ -93,6 +93,28 @@ function SelectionList(props) {
 
     function displayElement(el) {
 
+        function displayData() {
+
+            return (
+                <div className='list-data-container'>
+                    {props.display_data.bool.map(function(booldata) {
+
+                        if (!typeof(booldata)==='object') {booldata = {data: booldata}}
+
+                        return(
+                            <div style={{display:'inline'}}>
+                                {booldata.title? booldata.title : booldata.data}
+                                <div className='list-data-bool-indicator' style={{
+                                    backgroundColor: el[booldata.data] ? (booldata.colors? booldata.colors[0]:'rgb(0,255,0)'):(booldata.colors? booldata.colors[1]:'rgb(255,0,0)')
+                                }}/>
+                            </div>
+                        )
+
+                    })}
+                </div>
+            )
+        }
+
         return (
             <div className='selection-list-element-container'>
 
@@ -105,6 +127,8 @@ function SelectionList(props) {
                     src={el.filedata}
                     class='selection-list-audio'>
                 </audio> : <div/>}
+
+                {props.display_data? displayData() : <div/>}
 
             </div>
         )

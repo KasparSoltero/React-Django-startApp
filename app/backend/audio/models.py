@@ -33,20 +33,20 @@ class AudioClip(models.Model):
     filedata = models.FileField(blank=True)
 
     #parent_audio references the 'AudioFile' object which the 'AudioClip' is a part of
-    parent_audio = models.ForeignKey(AudioFile, on_delete=models.CASCADE, blank=True)
+    parent_audio = models.ForeignKey(AudioFile, on_delete=models.SET_NULL, blank=True, null=True)
     
     #start_time and end_time in seconds relative to the 'parent_audio' .wav file
     start_time = models.DecimalField(max_digits=5, decimal_places=2, default=0)
     end_time = models.DecimalField(max_digits=5, decimal_places=2, default=0)
 
     #reference_audio references another 'AudioClip' which has 'use_as_ref=True'
-    reference_audio = models.ForeignKey('self', on_delete=models.SET_NULL, null=True)
+    reference_audio = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True)
 
     #use_as_ref determines whether to use the AudioClip as a reference during convolution
-    use_as_ref = models.BooleanField(default=False)
+    use_as_ref = models.BooleanField(default=False, blank=True, null=True)
 
     #animal is assigned to reference clips, and carried to all matching AudioClips
-    animal = models.ForeignKey(Animal, on_delete=models.SET_NULL, null=True)
+    animal = models.ForeignKey(Animal, on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
         return self.title

@@ -3,35 +3,35 @@ import axios from 'axios'
 
 function Highlights(props) {
 
-    const [ noiseclips, setNoiseclips ] = useState(null)
+    const [ audio_clips, setAudioClips ] = useState(null)
 
-    const [ selectedHighlight, setSelectedHighlight ] = useState(null);
-    const [ isDragging, setIsDragging] = useState(false);
+    const [ selected_highlight, setSelectedHighlight ] = useState(null);
+    const [ is_dragging, setIsDragging] = useState(false);
     const [ xInitial, setXInitial ] = useState(null)
     const [ xPos, setXPos ] = useState(null);
     const [ highlightXInitial, setHighlightXInitial ] = useState(null);
-    const [ draggingLeft, setDraggingLeft ] = useState(null)
+    const [ dragging_left, setDraggingLeft ] = useState(null)
     const [ highlightWidthInitial, setHighlightWidthInitial ] = useState(null)
 
 
     useEffect(() => {
-        updateNoiseclips()
+        updateAudioClips()
         setSelectedHighlight(null)
     }, [props])
 
-    function updateNoiseclips() {
+    function updateAudioClips() {
         //get noiseclips associated with audioFile from database
         const form = (new FormData)
-        form.append('object', 'Noiseclip')
+        form.append('object', 'AudioClip')
         form.append('return', 'filtered_list')
-        form.append('id', props.audioFile.id)
+        form.append('id', props.audio_file.id)
 
         axios({
             method: 'post',
             url: 'get-model/',
             data: form
         }).then(function(response) {
-            setNoiseclips(response.data)
+            setAudioClips(response.data)
         })
     }
 
@@ -39,17 +39,17 @@ function Highlights(props) {
     function updateHighlight() {
         // edit highlight's stored times in the database based on the user's edits
 
-        let hl = selectedHighlight
+        let hl = selected_highlight
 
-        const duration = parseFloat(props.audioFile.duration)
+        const duration = parseFloat(props.audio_file.duration)
 
-        let newStart = Math.round(100*duration *  hl.offsetLeft / hl.offsetParent.offsetWidth) / 100
-        let newEnd = Math.round(100*duration * (hl.offsetWidth + hl.offsetLeft) / hl.offsetParent.offsetWidth) / 100
+        let new_start = Math.round(100*duration *  hl.offsetLeft / hl.offsetParent.offsetWidth) / 100
+        let new_end = Math.round(100*duration * (hl.offsetWidth + hl.offsetLeft) / hl.offsetParent.offsetWidth) / 100
 
         let formdata = new FormData
-        formdata.append('id', selectedHighlight.getAttribute('highlight_id'))
-        formdata.append('start', newStart)
-        formdata.append('end', newEnd)
+        formdata.append('id', selected_highlight.getAttribute('highlight_id'))
+        formdata.append('start', new_start)
+        formdata.append('end', new_end)
 
         axios({
             method: 'post',
@@ -80,7 +80,7 @@ function Highlights(props) {
 
         //deselect or change selected highlight clip
         let hl = e.target
-        if (!(hl == selectedHighlight)) {
+        if (!(hl == selected_highlight)) {
             hl.style.backgroundColor = changeAlpha(hl.style.backgroundColor, 0.8)
             setSelectedHighlight(hl)
         } else {
@@ -91,12 +91,12 @@ function Highlights(props) {
 
 
     function handleMouseDown(e) {
-        if ((e.target.className == 'highlight') && selectedHighlight) {
+        if ((e.target.className == 'highlight') && selected_highlight) {
             //initial x position for dragging
             if (xInitial == null) {
                 setXInitial(e.pageX)
-                setHighlightXInitial(selectedHighlight.offsetLeft)
-                setHighlightWidthInitial(selectedHighlight.offsetWidth)
+                setHighlightXInitial(selected_highlight.offsetLeft)
+                setHighlightWidthInitial(selected_highlight.offsetWidth)
             }
             handleHighlightDrag(e)
         }
@@ -107,9 +107,9 @@ function Highlights(props) {
         
         setIsDragging(true)
 
-        let mouse = e.pageX - selectedHighlight.offsetParent.offsetLeft
-        let left = selectedHighlight.offsetLeft
-        let right = selectedHighlight.offsetLeft + selectedHighlight.offsetWidth
+        let mouse = e.pageX - selected_highlight.offsetParent.offsetLeft
+        let left = selected_highlight.offsetLeft
+        let right = selected_highlight.offsetLeft + selected_highlight.offsetWidth
 
         //drag either left or right side of highlight, depending on which side is closer
         if (Math.abs(mouse - left) > Math.abs(right - mouse)) {
@@ -126,7 +126,7 @@ function Highlights(props) {
             }
             setIsDragging(false)
 
-        } else if (isDragging) { // if mouse was dragging
+        } else if (is_dragging) { // if mouse was dragging
 
             setIsDragging(false)
             setXPos(null)
@@ -142,14 +142,14 @@ function Highlights(props) {
 
 
     function handlePointerMove(e) {
-        if (isDragging && xInitial) {
+        if (is_dragging && xInitial) {
 
             setXPos(e.pageX - xInitial)
-            if (draggingLeft == true) {
-                selectedHighlight.style.marginLeft = String(highlightXInitial + xPos) + 'px'
-                selectedHighlight.style.width = String(highlightWidthInitial - xPos) + 'px'
-            } else if (draggingLeft == false) {
-                selectedHighlight.style.width = String(highlightWidthInitial + xPos) + 'px'
+            if (dragging_left == true) {
+                selected_highlight.style.marginLeft = String(highlightXInitial + xPos) + 'px'
+                selected_highlight.style.width = String(highlightWidthInitial - xPos) + 'px'
+            } else if (dragging_left == false) {
+                selected_highlight.style.width = String(highlightWidthInitial + xPos) + 'px'
             }
         }
     }
@@ -157,28 +157,27 @@ function Highlights(props) {
 
     return (
         <div>
-            {noiseclips ? noiseclips.map(function(nc) {
-
-                const duration = parseFloat(props.audioFile.duration)
+            {audio_clips ? audio_clips.map(function(clip) {
+                const duration = parseFloat(props.audio_file.duration)
                 
                 // let color = response.data[i]['color']
                 let color = 'rgba(255,0,0,0.3)'
 
-                let start = parseFloat(nc.startTime)
-                let end = parseFloat(nc.endTime)
+                let start = parseFloat(clip.start_time)
+                let end = parseFloat(clip.end_time)
 
-                let relStart = Math.round(100*start/duration)
-                let relEnd = Math.round(100*end/duration)
+                let rel_start = Math.round(100*start/duration)
+                let rel_end = Math.round(100*end/duration)
 
                 return (
                     <div 
                         className='highlight' 
-                        highlight_id={nc.id}
+                        highlight_id={clip.id}
                         style={{
-                            width: String(relEnd-relStart) + "%",
+                            width: String(rel_end-rel_start) + "%",
                             height:'100px',
                             backgroundColor: color,
-                            marginLeft: String(relStart) + "%",
+                            marginLeft: String(rel_start) + "%",
                             top: '0px',
                             position: 'absolute',
                             zIndex: 10,

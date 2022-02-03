@@ -27,6 +27,8 @@ import scipy.io.wavfile as wave
 
 from django.apps import apps
 
+from copy import deepcopy
+
 # from django.core import serializers
 
 
@@ -40,20 +42,6 @@ def getGenericSerializer(model_arg):
 
     return GenericSerializer
 
-class UnprocessedAudioView(viewsets.ModelViewSet):
-    serializer_class = UnprocessedAudioSerializer
-    queryset = AudioFile.objects.all()
-
-    def create(self, request):
-        print('\nDebugs:')
-        print(request.POST)
-        print('\n')
-
-        return HttpResponse('tomato')
-
-    def __str__(self):
-        return self.title
-
 
 @api_view(['POST'])
 def getModel(request):
@@ -65,32 +53,27 @@ def getModel(request):
 
         if request.POST['return'] == 'list':
 
-            objects = model.objects.all()
-            serializer = serializer(objects, many=True)
-            return Response(serializer.data)
+            objects_to_return = model.objects.all()
 
         elif request.POST['return'] == 'filtered_list':
 
             if request.POST['object']=='AudioClip': #need more general solution
-                obj = model.objects.filter(parent_audio_id=request.POST['id'])
-            serializer = serializer(obj, many=True)
-            return Response(serializer.data)
+                objects_to_return = model.objects.filter(parent_audio_id=request.POST['id'])
 
+        objects_to_return = deepcopy(objects_to_return) #create mutable copy of queryset
 
-def readWav(request):
-    if request.method == 'POST':
+        if request.POST.__contains__('add_related_models'):
+            temp = []
+            for obj in objects_to_return:
+                temp.append(str(obj.audioclip_set))
 
-        #get wav file
-        name = request.POST['model'].split('.')[1]
-        model = apps.get_model(app_label="audio", model_name=name)
-        object = model.objects.get(pk=request.POST['pk'])
+            objects_to_return.related_models = temp
+            serializer = serializer(objects_to_return, many=True)
+            return Response([serializer.data, temp])
 
-        sr, data = wave.read(object.filedata)
+        serializer = serializer(objects_to_return, many=True)
 
-        print(sr)
-        print(data)
-
-        return HttpResponse(object.filedata)
+        return Response(serializer.data)
 
 
 def UploadFilesView(request):
@@ -103,25 +86,6 @@ def UploadFilesView(request):
         )
 
         return HttpResponse('success')
-
-
-def retrieveAudioView(request):
-
-    if request.method == 'GET':
-
-        outputArray = []
-
-        filelist = AudioFile.objects.all()
-
-        for file in filelist:
-
-            f = file.filedata.open(mode='rb')
-            filename = f.name
-            sr, signal = wave.read(f)
-
-            outputArray.append([filename, list(signal)])
-        
-        return HttpResponse(outputArray)
 
 
 def addDenoised(request):
@@ -287,19 +251,6 @@ def downsample(recording, sample_rate, rate=16000):
     return recording
 
 
-def addReferenceTemp(request):
-    if request.method == 'POST':
-
-        data = request.POST
-
-        Referenceclip.objects.create(
-            title = data['title'],
-            audiofile = request.FILES['file']
-        )
-
-        return HttpResponse('success')
-
-
 @api_view(['POST'])
 def updateHighlight(request):
     if request.method == 'POST':
@@ -314,27 +265,6 @@ def updateHighlight(request):
 
 
 @api_view(['POST'])
-def getRelatedNoiseclips(request):
-    if request.method == 'POST':
-
-        audioId = request.POST['id']
-        parentAudioObject = AudioFile.objects.get(pk=audioId)
-        Noiseclips = Noiseclip.objects.filter(parentAudio=parentAudioObject)
-
-        responseArray = list(Noiseclips.values())
-
-        # add color of associated call type to response array:
-        # e.g possum calls are red, cat calls are green
-        for i, nc in enumerate(Noiseclips):
-            responseArray[i]['color'] = nc.referenceAudio.color
-            if responseArray[i]['color'] == 'none':
-                responseArray[i]['color'] = 'rgba(100,100,100,0.3)'
-
-            responseArray[i]['referenceTitle'] = nc.referenceAudio.title
-
-        return HttpResponse(json.dumps(responseArray, cls=DjangoJSONEncoder))
-
-
 def convolveAudio(request):
     if request.method == 'POST':
 
@@ -342,15 +272,17 @@ def convolveAudio(request):
 
         audioObject = AudioFile.objects.get(id=audioID)
 
-        sampleRate, s = wave.read(audioObject.denoisedFile)
+        sampleRate, s = wave.read(audioObject.denoised_filedata)
+
+        refs = AudioClip.objects.filter(use_as_ref=True)
 
         def extract():
             # Extract recordings, repalce with SD card directory
             masks = []
             calls = []
 
-            for ref in Referenceclip.objects.all():
-                sampleRate, data = wave.read(ref.audiofile)
+            for ref in refs:
+                sampleRate, data = wave.read(ref.filedata)
                 data = np.array(data)
                 calls.append(ref.title)
                 masks.append(data)
@@ -532,21 +464,19 @@ def convolveAudio(request):
 
                 noiseclipTitle = audioObject.title.split('.wav')[0] + f'_clip_{i}.wav'
 
-                call = Referenceclip.objects.get(title=calls[i][0])
-
                 print(f'here are the timestamps for {audioObject}:')
                 print(f'startTime: {round(stamp[0] / 16000, 2)}')
                 print(f'endTime: {round(stamp[1] / 16000, 2)}')
 
-                newclip = Noiseclip.objects.create(
+                newclip = AudioClip.objects.create(
                     title = noiseclipTitle, 
-                    parentAudio = audioObject,
-                    referenceAudio = call,
-                    startTime = round(stamp[0] / 16000, 2),
-                    endTime = round(stamp[1] / 16000, 2)
+                    parent_audio = audioObject,
+                    reference_audio = AudioClip.objects.get(title=calls[i][0]),
+                    start_time = round(stamp[0] / 16000, 2),
+                    end_time = round(stamp[1] / 16000, 2)
                     )
 
-                newclip.audiofile.save(noiseclipTitle, noiseclip)
+                newclip.filedata.save(noiseclipTitle, noiseclip)
 
         # Extract masks
         masks, calls = extract()
@@ -569,3 +499,89 @@ def convolveAudio(request):
         save(s, unique, calls, sampleRate)
 
         return HttpResponse('success')
+
+
+
+#views to remove...
+def getRelatedNoiseclips(request):
+    if request.method == 'POST':
+
+        audioId = request.POST['id']
+        parentAudioObject = AudioFile.objects.get(pk=audioId)
+        Noiseclips = Noiseclip.objects.filter(parentAudio=parentAudioObject)
+
+        responseArray = list(Noiseclips.values())
+
+        # add color of associated call type to response array:
+        # e.g possum calls are red, cat calls are green
+        for i, nc in enumerate(Noiseclips):
+            responseArray[i]['color'] = nc.referenceAudio.color
+            if responseArray[i]['color'] == 'none':
+                responseArray[i]['color'] = 'rgba(100,100,100,0.3)'
+
+            responseArray[i]['referenceTitle'] = nc.referenceAudio.title
+
+        return HttpResponse(json.dumps(responseArray, cls=DjangoJSONEncoder))
+
+
+def addReferenceTemp(request):
+    if request.method == 'POST':
+
+        data = request.POST
+
+        Referenceclip.objects.create(
+            title = data['title'],
+            audiofile = request.FILES['file']
+        )
+
+        return HttpResponse('success')
+
+
+def retrieveAudioView(request):
+
+    if request.method == 'GET':
+
+        outputArray = []
+
+        filelist = AudioFile.objects.all()
+
+        for file in filelist:
+
+            f = file.filedata.open(mode='rb')
+            filename = f.name
+            sr, signal = wave.read(f)
+
+            outputArray.append([filename, list(signal)])
+        
+        return HttpResponse(outputArray)
+
+
+def readWav(request):
+    if request.method == 'POST':
+
+        #get wav file
+        name = request.POST['model'].split('.')[1]
+        model = apps.get_model(app_label="audio", model_name=name)
+        object = model.objects.get(pk=request.POST['pk'])
+
+        sr, data = wave.read(object.filedata)
+
+        print(sr)
+        print(data)
+
+        return HttpResponse(object.filedata)
+
+
+class UnprocessedAudioView(viewsets.ModelViewSet):
+    serializer_class = UnprocessedAudioSerializer
+    queryset = AudioFile.objects.all()
+
+    def create(self, request):
+        print('\nDebugs:')
+        print(request.POST)
+        print('\n')
+
+        return HttpResponse('tomato')
+
+    def __str__(self):
+        return self.title
