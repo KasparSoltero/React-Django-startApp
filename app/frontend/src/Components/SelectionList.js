@@ -15,7 +15,7 @@ function SelectionList(props) {
         //display_title - display title of object?
         //display_audio - display audio controls for file?
     //selectable - are list items selectable?
-    //updateSelected - function to which selected item is passed upwards
+    //onSelect - function to which selected item is passed upwards
     //style_options - passed to css style of the list container
     
     const [ list, setList ] = useState(null)
@@ -82,7 +82,7 @@ function SelectionList(props) {
             object: selected_db_object
         }
 
-        if (props.updateSelected) props.updateSelected(form)
+        if (props.onSelect) props.onSelect(form)
 
         //update visuals to show selected component
         for (let el of document.getElementsByClassName('list-element')) {

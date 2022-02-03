@@ -80,39 +80,37 @@ function Upload_Audio() {
         var uploadData = document.getElementById('uploadFiles').files
         var numFiles = uploadData['length'];
 
-
         for (let i = 0; i<numFiles; i++) {
-            const formdata = new FormData();
-            formdata.append('title', uploadData[i].name)
-            formdata.append('file', uploadData[i]);
+            const form = new FormData();
+            form.append('title', uploadData[i].name)
+            form.append('file', uploadData[i]);
             axios({
                 method: 'post',
-                url: '/uploadfiles/',
-                data: formdata,
-            }).then(
-                (response) => console.log(response))
-        }
-
-    }
-
-
-    function uploadFilesasrefTemp() {
-        var uploadData = document.getElementById('uploadFiles').files
-        var numFiles = uploadData['length'];
-
-
-        for (let i = 0; i<numFiles; i++) {
-            const formdata = new FormData();
-            formdata.append('title', uploadData[i].name)
-            formdata.append('file', uploadData[i]);
-            axios({
-                method: 'post',
-                url: '/add-reference-temp/',
-                data: formdata,
+                url: 'upload-files/',
+                data: form,
             }).then(
                 (response) => console.log(response))
         }
     }
+
+
+    // function uploadFilesasrefTemp() {
+    //     var uploadData = document.getElementById('uploadFiles').files
+    //     var numFiles = uploadData['length'];
+
+
+    //     for (let i = 0; i<numFiles; i++) {
+    //         const formdata = new FormData();
+    //         formdata.append('title', uploadData[i].name)
+    //         formdata.append('file', uploadData[i]);
+    //         axios({
+    //             method: 'post',
+    //             url: '/add-reference-temp/',
+    //             data: formdata,
+    //         }).then(
+    //             (response) => console.log(response))
+    //     }
+    // }
 
 
     return (
@@ -154,9 +152,9 @@ function Upload_Audio() {
             <button className='uploadbutton' onClick={() => uploadFilesToDB()}>
                 Upload files to database!
             </button>
-            <button className='uploadbutton' onClick={() => uploadFilesasrefTemp()}>
+            {/* <button className='uploadbutton' onClick={() => uploadFilesasrefTemp()}>
                 Upload files as reference clips!
-            </button>
+            </button> */}
 
         </div>
     )

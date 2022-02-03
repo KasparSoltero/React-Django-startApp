@@ -2,6 +2,7 @@
 
 .analyse-audio-container {
     display: inline-block;
+    overflow-y: overlay;
 
     height: 100%;
     width: 75%;
@@ -76,4 +77,9 @@
 .wavesurfer-container {
     margin: 10px;
     position: relative;
+}
+
+::-webkit-scrollbar {
+    width: 0px;
+    background: transparent; /* make scrollbar transparent */
 }

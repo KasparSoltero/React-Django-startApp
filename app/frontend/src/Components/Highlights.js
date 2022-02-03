@@ -17,7 +17,20 @@ function Highlights(props) {
     useEffect(() => {
         updateAudioClips()
         setSelectedHighlight(null)
-    }, [props])
+    }, [props.audio_file])
+
+
+    useEffect(()=> {
+        //send selected highlight to parent function
+        if (props.onSelect) {
+            let form = {
+                html_selected: selected_highlight,
+                object_id: selected_highlight? selected_highlight.getAttribute('highlight_id'): null
+            }
+            props.onSelect(form)
+        }
+    }, [selected_highlight])
+
 
     function updateAudioClips() {
         //get noiseclips associated with audioFile from database
@@ -38,7 +51,6 @@ function Highlights(props) {
 
     function updateHighlight() {
         // edit highlight's stored times in the database based on the user's edits
-
         let hl = selected_highlight
 
         const duration = parseFloat(props.audio_file.duration)
@@ -91,6 +103,7 @@ function Highlights(props) {
 
 
     function handleMouseDown(e) {
+
         if ((e.target.className == 'highlight') && selected_highlight) {
             //initial x position for dragging
             if (xInitial == null) {

@@ -46,6 +46,11 @@ def getGenericSerializer(model_arg):
 @api_view(['POST'])
 def getModel(request):
     #returns an object or list of objects from a specified model
+    #return - 'list' or 'filtered_list' or 'single'
+        #filtered_list: currently just for getting all 'AudioClip' objects related to one 'AudioFile'
+        #single: 'id': id of object to return
+    #add_related_models - add models related by foreignKey to return object
+
     if request.method == 'POST':
 
         model = apps.get_model(app_label="audio", model_name=request.POST['object'])
@@ -59,6 +64,10 @@ def getModel(request):
 
             if request.POST['object']=='AudioClip': #need more general solution
                 objects_to_return = model.objects.filter(parent_audio_id=request.POST['id'])
+
+        elif (request.POST['return'] == 'single'):
+
+            objects_to_return = model.objects.filter(pk=request.POST['id'])
 
         objects_to_return = deepcopy(objects_to_return) #create mutable copy of queryset
 
@@ -76,6 +85,7 @@ def getModel(request):
         return Response(serializer.data)
 
 
+@api_view(['POST'])
 def UploadFilesView(request):
     if request.method == 'POST':
         data = request.POST

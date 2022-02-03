@@ -15,8 +15,8 @@ urlpatterns = [
     path('convolve-audio/', views.convolveAudio),
     path('get-model/', views.getModel),
     path('read-wav/', views.readWav),
+    path('upload-files/', views.UploadFilesView),
 
-    path('uploadfiles/', views.UploadFilesView),
     path('add-denoised/', views.addDenoised),
     path('retrieve-audio/', views.retrieveAudioView),
     path('add-reference-temp/', views.addReferenceTemp),

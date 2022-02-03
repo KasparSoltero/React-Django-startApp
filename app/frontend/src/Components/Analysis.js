@@ -8,6 +8,7 @@ import Wavesurfer from 'wavesurfer.js';
 import SelectionList from './SelectionList.js'
 import Waveform from './Waveform.js'
 import Highlights from './Highlights.js'
+import ObjectDataPanel from './ObjectDataPanel.js'
 
 // import isChrome from 'react-device-detect'
 import { isChrome } from 'react-device-detect';
@@ -32,12 +33,33 @@ function Analysis() {
     const [ audio_file, setAudioFile ] = useState(null);
     const [ audio_list, setAudioList ] = useState(0);
 
-    const [ wavesurfer_ready, setWavesurferReady ] = useState(false);
+    const [ selected_audio_clip, setSelectedAudioClip ] = useState(null)
 
 
     function handleAudioSelection(selection) {
         setAudioFile(selection.object)
     }
+
+
+    function handleHighlightSelection(selection) {
+        if (selection.html_selected) {
+            const form = new FormData
+            form.append('return', 'single')
+            form.append('object', 'AudioClip')
+            form.append('id', selection.object_id)
+
+            axios({
+                method: 'post',
+                url: 'get-model/',
+                data: form,
+            }).then((response)=>{
+                setSelectedAudioClip(response.data[0])
+            })
+        } else {
+            setSelectedAudioClip(null)
+        }
+    }
+
 
 
     function playPauseButtons() {
@@ -66,7 +88,7 @@ function Analysis() {
                 list_type='backend-data' 
                 object={['audiofile']}
                 selectable={true}
-                updateSelected={handleAudioSelection}
+                onSelect={handleAudioSelection}
                 // display_audio={true}
                 display_title={true}
                 style_options={{
@@ -88,8 +110,19 @@ function Analysis() {
                         style_options={{
                         }}
                     />
-                    {audio_file ? <Highlights audio_file={audio_file}/> : <div/>}
+                    {audio_file ? 
+                        <Highlights 
+                            audio_file={audio_file}
+                            onSelect={handleHighlightSelection}
+                        /> : <div/>}
                 </div>
+                {selected_audio_clip ? 
+                    <ObjectDataPanel
+                        object = {selected_audio_clip}
+                        style_options={{
+                            // backgroundColor: 'rgb(0,255,0)'
+                        }}
+                    /> : <div/>}
             </div>
 
         </div>
