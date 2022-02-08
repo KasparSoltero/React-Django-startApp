@@ -35,7 +35,7 @@ function Highlights(props) {
     function updateAudioClips() {
         //get noiseclips associated with audioFile from database
         const form = (new FormData)
-        form.append('object', 'AudioClip')
+        form.append('model', 'AudioClip')
         form.append('return', 'filtered_list')
         form.append('id', props.audio_file.id)
 
@@ -184,6 +184,7 @@ function Highlights(props) {
 
                 return (
                     <div 
+                        key={clip.id}
                         className='highlight' 
                         highlight_id={clip.id}
                         style={{

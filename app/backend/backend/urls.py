@@ -12,14 +12,15 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
 
-    path('convolve-audio/', views.convolveAudio),
     path('get-model/', views.getModel),
-    path('read-wav/', views.readWav),
     path('upload-files/', views.UploadFilesView),
+    path('update-highlight/', views.updateHighlight),
+    path('convolve-audio/', views.convolveAudio),
+    path('update-object/', views.updateObject),
 
+    #unused paths
     path('add-denoised/', views.addDenoised),
     path('retrieve-audio/', views.retrieveAudioView),
     path('add-reference-temp/', views.addReferenceTemp),
-    path('update-highlight/', views.updateHighlight),
     path('get-related-noiseclips/', views.getRelatedNoiseclips),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

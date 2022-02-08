@@ -45,7 +45,7 @@ function Upload_Audio() {
 
         //get all audio files
         let form = (new FormData)
-        form.append('object', 'AudioFile')
+        form.append('model', 'AudioFile')
         form.append('return', 'list')
         form.append('add_related_models', 'audioclip')
 
@@ -94,25 +94,6 @@ function Upload_Audio() {
     }
 
 
-    // function uploadFilesasrefTemp() {
-    //     var uploadData = document.getElementById('uploadFiles').files
-    //     var numFiles = uploadData['length'];
-
-
-    //     for (let i = 0; i<numFiles; i++) {
-    //         const formdata = new FormData();
-    //         formdata.append('title', uploadData[i].name)
-    //         formdata.append('file', uploadData[i]);
-    //         axios({
-    //             method: 'post',
-    //             url: '/add-reference-temp/',
-    //             data: formdata,
-    //         }).then(
-    //             (response) => console.log(response))
-    //     }
-    // }
-
-
     return (
         <div className='main-box'>
 
@@ -124,7 +105,7 @@ function Upload_Audio() {
             <SelectionList 
                 list_type='backend-data' 
                 object={['AudioFile', 'AudioClip']}
-                selectable={false}
+                // selectable={false}
                 // updateSelected={}
                 // display_audio={true}
                 display_title={true}
@@ -141,8 +122,8 @@ function Upload_Audio() {
                         data: 'denoised_filedata',
                         title: 'Denoised',
                     }, {
-                        data: 'audioclip_set',
-                        title: 'tomato',
+                        data: 'use_as_ref',
+                        title: 'ref',
                         colors: ['rgb(100,0,200)','rgb(0,200,100)']
                     }],
                 }}

@@ -8,6 +8,7 @@ from .models import *
 from django.views import View
 from django.http import HttpResponse
 import json
+import django
 
 import scipy.io.wavfile as wave
 import wave as wave2
@@ -53,7 +54,7 @@ def getModel(request):
 
     if request.method == 'POST':
 
-        model = apps.get_model(app_label="audio", model_name=request.POST['object'])
+        model = apps.get_model(app_label="audio", model_name=request.POST['model'])
         serializer = getGenericSerializer(model)
 
         if request.POST['return'] == 'list':
@@ -62,7 +63,7 @@ def getModel(request):
 
         elif request.POST['return'] == 'filtered_list':
 
-            if request.POST['object']=='AudioClip': #need more general solution
+            if request.POST['model']=='AudioClip': #need more general solution
                 objects_to_return = model.objects.filter(parent_audio_id=request.POST['id'])
 
         elif (request.POST['return'] == 'single'):
@@ -98,6 +99,7 @@ def UploadFilesView(request):
         return HttpResponse('success')
 
 
+#broken!
 def addDenoised(request):
     #denoises and downsamples to 16k
 
@@ -509,6 +511,51 @@ def convolveAudio(request):
         save(s, unique, calls, sampleRate)
 
         return HttpResponse('success')
+
+
+@api_view(['POST'])
+def updateObject(request):
+    if request.method == 'POST':
+
+        model = apps.get_model(app_label="audio", model_name=request.POST['model'])
+
+        obj = model.objects.get(pk=request.POST['id'])
+
+        field = model._meta.get_field(request.POST['field_key'])
+
+        if isinstance(field, django.db.models.fields.CharField):
+            print('char')
+            setattr(obj, request.POST['field_key'], request.POST['new_value'])
+            obj.save()
+
+        elif isinstance(field, django.db.models.fields.DecimalField):
+            print('dec')
+            setattr(obj, request.POST['field_key'], request.POST['new_value'])
+            obj.save()
+
+        elif isinstance(field, django.db.models.fields.BooleanField):
+            print('bool')
+            if request.POST['new_value'] in ['true', 'false']:
+                new_value = request.POST['new_value'].capitalize()
+            else: new_value = request.POST['new_value']
+            setattr(obj, request.POST['field_key'], new_value)
+            obj.save()
+
+        elif isinstance(field, django.db.models.fields.related.ForeignKey):
+            print('foreign')
+            foreign_model = model = apps.get_model(app_label="audio", model_name=request.POST['field_key'])
+            
+            foreign_object = foreign_model.objects.filter(title=request.POST['new_value'])
+
+            if foreign_object: #animal exists
+                new_value = foreign_object[0]
+                setattr(obj, request.POST['field_key'], new_value)
+                obj.save()
+
+            else: #animal does not exist, create animal
+                print('create new animal...')
+
+        return HttpResponse('edited object')
 
 
 

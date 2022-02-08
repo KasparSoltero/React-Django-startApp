@@ -42,7 +42,7 @@ function SelectionList(props) {
             for (let object of props.object) {
 
                 let form = (new FormData)
-                form.append('object', object)
+                form.append('model', object)
                 form.append('return', 'list')
 
                 axios({
@@ -96,13 +96,13 @@ function SelectionList(props) {
         function displayData() {
 
             return (
-                <div className='list-data-container'>
+                <div className='list-data-container' key={String(el.id)}>
                     {props.display_data.bool.map(function(booldata) {
 
                         if (!typeof(booldata)==='object') {booldata = {data: booldata}}
 
                         return(
-                            <div style={{display:'inline'}}>
+                            <div style={{display:'inline'}} key={booldata.data}>
                                 {booldata.title? booldata.title : booldata.data}
                                 <div className='list-data-bool-indicator' style={{
                                     backgroundColor: el[booldata.data] ? (booldata.colors? booldata.colors[0]:'rgb(0,255,0)'):(booldata.colors? booldata.colors[1]:'rgb(255,0,0)')
@@ -118,14 +118,14 @@ function SelectionList(props) {
         return (
             <div className='selection-list-element-container'>
 
-                {props.display_title? <div class='selection-list-title'>
+                {props.display_title? <div className='selection-list-title'>
                     {String(el.title)}
-                </div> : <div class='invisible'/>}
+                </div> : <div/>}
 
                 {(props.display_audio && el.filedata) ? <audio 
                     controls
                     src={el.filedata}
-                    class='selection-list-audio'>
+                    className='selection-list-audio'>
                 </audio> : <div/>}
 
                 {props.display_data? displayData() : <div/>}
@@ -147,7 +147,7 @@ function SelectionList(props) {
                     }
 
                     return (
-                        <div className={object===selected_header? 'list-header selected':'list-header selectable'} {...header_props}>
+                        <div className={object===selected_header? 'list-header selected':'list-header selectable'} {...header_props} key={object}>
                             {object}
                         </div>
                     )
@@ -175,7 +175,7 @@ function SelectionList(props) {
                     }
 
                     return (
-                        <div {...element_props}>
+                        <div {...element_props} key={list_element.id}>
                             {displayElement(list_element)}
                         </div>
                     )

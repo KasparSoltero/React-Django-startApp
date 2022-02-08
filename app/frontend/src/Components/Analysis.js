@@ -45,7 +45,7 @@ function Analysis() {
         if (selection.html_selected) {
             const form = new FormData
             form.append('return', 'single')
-            form.append('object', 'AudioClip')
+            form.append('model', 'AudioClip')
             form.append('id', selection.object_id)
 
             axios({
@@ -59,7 +59,6 @@ function Analysis() {
             setSelectedAudioClip(null)
         }
     }
-
 
 
     function playPauseButtons() {
@@ -83,7 +82,7 @@ function Analysis() {
 
     return (
         <div className='main-box'>
-            
+
             <SelectionList 
                 list_type='backend-data' 
                 object={['audiofile']}
@@ -101,9 +100,9 @@ function Analysis() {
 
             <div className='analyse-audio-container'>
                 <div className='wavesurfer-container'>
-                    <Waveform 
+                    <Waveform
                         spectrogram={true}
-                        //if chrome is used, visuals are generated from original audio
+                        //if chrome is used, visuals are generated from original audio, else from denoised audio
                         filedata={audio_file? (audio_file.denoised_filedata? (isChrome? audio_file.filedata : audio_file.denoised_filedata) : null) : null}
                         wave_height={150}
                         spec_height={'150px'}
@@ -119,6 +118,8 @@ function Analysis() {
                 {selected_audio_clip ? 
                     <ObjectDataPanel
                         object = {selected_audio_clip}
+                        keys = {['title', 'start_time', 'end_time', 'use_as_ref', 'animal']}
+                        mutable = {true}
                         style_options={{
                             // backgroundColor: 'rgb(0,255,0)'
                         }}

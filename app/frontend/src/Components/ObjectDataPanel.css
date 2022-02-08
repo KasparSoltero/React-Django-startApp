@@ -30,7 +30,7 @@
     left: 0;
     padding: 5px;
     /* margin: 5px; */
-    width: 50%;
+    width: 30%;
     height: 100%;
 }
 
@@ -47,4 +47,14 @@
     border-style: solid;
     border-width: 1px;
     border-color: var(--main-color);
+}
+
+.data-panel-update-button {
+    position: absolute;
+    right: 0;
+
+    /* border: none; */
+    /* border-style: solid;
+    border-width: 1px;
+    border-color: var(--text-color-main) */
 }
