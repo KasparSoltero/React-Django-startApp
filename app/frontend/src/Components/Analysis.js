@@ -23,15 +23,13 @@ const waveform_height = 200;
 function Analysis() {
 
     const [ audio_file, setAudioFile ] = useState(null);
-    const [ audio_list, setAudioList ] = useState(0);
 
     const [ selected_audio_clip, setSelectedAudioClip ] = useState(null)
 
-    const [ update_var, setUpdateVar ] = useState(false)
-
+    const [ update_prop, setUpdateProp ] = useState(false)
 
     function handleAudioSelection(selection) {
-        setAudioFile(selection.object)
+        setAudioFile(()=>selection.object)
     }
 
 
@@ -47,18 +45,31 @@ function Analysis() {
                 url: 'get-model/',
                 data: form,
             }).then((response)=>{
-                setSelectedAudioClip(response.data[0])
+                setSelectedAudioClip(()=>response.data[0])
             })
         } else {
-            setSelectedAudioClip(null)
+            setSelectedAudioClip(()=>null)
         }
     }
 
 
-    function refreshWaveforms() {
-        setUpdateVar(!update_var)
-    }
+    function handleHighlightSave(object_id) {
+        // console.log('analysis, changing update prop')
+        console.log('analysis, changing selected_audio_clip')
+        const form = new FormData
+        form.append('return', 'single')
+        form.append('model', 'AudioClip')
+        form.append('id', object_id)
 
+        axios({
+            method: 'post',
+            url: 'get-model/',
+            data: form,
+        }).then((response)=>{
+            setSelectedAudioClip(()=>response.data[0])
+            setUpdateProp((update_prop)=>!update_prop)
+        })
+    }
 
     function playPauseButtons() {
 
@@ -112,7 +123,7 @@ function Analysis() {
                         <Highlights
                             audio_file={audio_file}
                             onSelect={handleHighlightSelection}
-                            update_var={update_var}
+                            onHighlightSave={handleHighlightSave}
                         /> : <div/>}
                 </div>
                 {selected_audio_clip ? 
@@ -120,10 +131,10 @@ function Analysis() {
                         object = {selected_audio_clip}
                         keys = {['title', 'start_time', 'end_time', 'use_as_ref', 'animal']}
                         mutable = {true}
-                        onDataUpdate = {refreshWaveforms}
                         style_options={{
                             // backgroundColor: 'rgb(0,255,0)'
                         }}
+                        update_prop = {update_prop}
                     /> : <div/>}
             </div>
 

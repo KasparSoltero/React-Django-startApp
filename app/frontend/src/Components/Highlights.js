@@ -16,12 +16,16 @@ function Highlights(props) {
 
 
     useEffect(() => {
-        setSelectedHighlight(null)
+        console.log('highlight, initialize useeffect called setting highlights to null etc')
+        setSelectedHighlight(()=>null)
         updateAudioClips()
-    }, [props.audio_file, props.update_var])
+
+    }, [props.audio_file] )
 
 
     useEffect(()=> {
+        console.log('highlight, sending selected highlight which is:')
+        console.log(selected_highlight)
         //send selected highlight to parent function
         if (props.onSelect) {
             let form = {
@@ -45,13 +49,15 @@ function Highlights(props) {
             url: 'get-model/',
             data: form
         }).then(function(response) {
-            setAudioClips(response.data)
+
+            setAudioClips(()=>response.data)
 
             let id_list = []
             response.data.map((clip)=>{
                 id_list.push(clip.animal)
             })
-
+            
+            console.log('response from audio clip update.. id List of audioClips:')
             console.log(id_list)
 
             var form2 = new FormData
@@ -94,6 +100,8 @@ function Highlights(props) {
             data: formdata
         }).then((response) => {
             console.log(response)
+
+            if (props.onHighlightSave) {props.onHighlightSave(selected_highlight.getAttribute('highlight_id'))}
         })
     }
 
@@ -119,10 +127,10 @@ function Highlights(props) {
         let hl = e.target
         if (!(hl == selected_highlight)) {
             hl.style.backgroundColor = changeAlpha(hl.style.backgroundColor, 0.8)
-            setSelectedHighlight(hl)
+            setSelectedHighlight(()=>hl)
         } else {
             hl.style.backgroundColor = changeAlpha(hl.style.backgroundColor, 0.3)
-            setSelectedHighlight(null)
+            setSelectedHighlight(()=>null)
         }
     }
 
@@ -198,9 +206,9 @@ function Highlights(props) {
             {audio_clips ? audio_clips.map(function(clip) {
                 const duration = parseFloat(props.audio_file.duration)
                 
-                console.log(clip)
-                console.log(colors)
-                console.log(audio_clips.indexOf(clip))
+                // console.log(clip)
+                // console.log(colors)
+                // console.log(audio_clips.indexOf(clip))
                 let color = (colors && colors[audio_clips.indexOf(clip)]) ? colors[audio_clips.indexOf(clip)] : 'rgba(0,0,0,0.3)'
 
                 let start = parseFloat(clip.start_time)

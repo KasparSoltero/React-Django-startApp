@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import './SelectionList.css'
 
 import getCSRF from './getCSRF.js'
@@ -21,6 +21,14 @@ function SelectionList(props) {
     const [ list, setList ] = useState(null)
     const [ is_table, setIsTable ] = useState(null)
     const [ selected_header, setSelectedHeader ] = useState(null)
+
+
+    const isMounted = useRef(false)
+    useEffect(() => { //sets isMounted to false when component unmounts
+        isMounted.current = true;
+        return () => { isMounted.current = false }
+    }, []);
+
 
     useEffect(() => {
         if (props.list_type==='backend-data') {
@@ -49,10 +57,16 @@ function SelectionList(props) {
                     url: 'get-model/',
                     data: form
                 }).then((response) => {
-                    temp[object]=response.data
-                    
-                    if (Object.keys(temp).length == props.object.length) {
-                        setList(temp)
+
+                    if (isMounted.current) {
+                        //sometimes the component is unmounted before axios returns a request
+                        //react doesn't like if setState is used on an unmounted component
+                        //therefore isMounted.current is checked before setState is used
+
+                        temp[object]=response.data
+                        if (Object.keys(temp).length == props.object.length) {
+                            setList(temp)
+                        }
                     }
                 })
             }

@@ -1,5 +1,5 @@
 import './ObjectDataPanel.css'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import axios from 'axios'
 
 import SelectionList from './SelectionList';
@@ -18,6 +18,13 @@ function ObjectDataPanel(props) {
 
     const [ field_types, setFieldTypes ] = useState(null)
 
+    const isMounted = useRef(false)
+    useEffect(() => {
+        isMounted.current = true;
+        return () => { isMounted.current = false }
+      }, []);
+    
+
     useEffect(() => {
         //get types of *mutable* fields
         let form = new FormData
@@ -28,10 +35,10 @@ function ObjectDataPanel(props) {
             url: 'get-field-types/',
             data: form
         }).then(function(response) {
-            setFieldTypes(response.data)
+            if (isMounted.current) setFieldTypes(()=>response.data)
         })
-    }, [props])
 
+    }, [props.object])
 
     function onButtonPress(e) {
         let field_key = e.target.id.split('-')[0]
@@ -57,7 +64,7 @@ function ObjectDataPanel(props) {
     }
 
     function updateDB(field_key, new_value) {
-
+        console.log('update DB called')
         let form = new FormData
         form.append('model', 'audioclip')
         form.append('id', props.object.id)
@@ -77,7 +84,6 @@ function ObjectDataPanel(props) {
 
 
     function displayParameter(key) {
-
         if (field_types) {
 
             let field_type = field_types[props.keys.indexOf(key)]
@@ -102,6 +108,7 @@ function ObjectDataPanel(props) {
                             type='number'
                             step={0.01}
                             defaultValue={parseFloat(props.object[key])}
+                            autoComplete='off'
                         />
                      <button id={key+'-button'} className='data-panel-update-button' type='button' onClick={onButtonPress}>update</button>
                     </div>
@@ -150,9 +157,10 @@ function ObjectDataPanel(props) {
             )
         }
     }
+    
 
     return (
-        <div className='object-data-panel'style={props.style_options? {...props.style_options} : null}>
+        <div key={String(props.update_prop)+String(props.object.id)} className='object-data-panel'style={props.style_options? {...props.style_options} : null}>
 
             {Object.keys(props.object).map(function(key) {
 
