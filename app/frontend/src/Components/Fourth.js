@@ -28,10 +28,10 @@ function Fourth() {
         <div className='main-box'>
             <SelectionList 
                 list_type='backend-data' 
-                object={['AudioFile', 'AudioClip', 'Animal']}
-                selectable={true}
+                object={['Animal']}
+                // selectable={true}
                 updateSelected={handleListSelection}
-                display_audio={true}
+                // display_audio={true}
                 display_title={true}
                 // style_options={{
                 //     width: '40%',

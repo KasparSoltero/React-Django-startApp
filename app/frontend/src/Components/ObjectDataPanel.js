@@ -1,9 +1,12 @@
 import './ObjectDataPanel.css'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import axios from 'axios'
+
+import SelectionList from './SelectionList';
 
 import getCSRF from './getCSRF.js'
 axios.defaults.headers.common["X-CSRFTOKEN"] = getCSRF();
+
 
 function ObjectDataPanel(props) {
     //display mutable and/or immutable data about an object
@@ -13,18 +16,47 @@ function ObjectDataPanel(props) {
     //keys - which keys of object to display, if left blank all keys are displayed
     //style_options - custom css styles passed to data panel
 
-    function onValueChange(e) {
-        // console.log(document.getElementById('title').value)
-        // console.log(e)
-        // console.log(e.target)
-        // console.log(e.target.id)
-        // console.log(props.object)
-        // console.log(props.object.id)
-    }
+    const [ field_types, setFieldTypes ] = useState(null)
+
+    useEffect(() => {
+        //get types of *mutable* fields
+        let form = new FormData
+        form.append('model', 'audioclip')
+        form.append('fields', props.keys)
+        axios({
+            method: 'post',
+            url: 'get-field-types/',
+            data: form
+        }).then(function(response) {
+            setFieldTypes(response.data)
+        })
+    }, [props])
+
 
     function onButtonPress(e) {
         let field_key = e.target.id.split('-')[0]
-        let new_value = document.getElementById(field_key).value
+        let input_element = document.getElementById(field_key)
+
+        let new_value = input_element.value
+
+        updateDB(field_key, new_value)
+    }
+
+    function onCheckedBox(e) {
+        let new_value = String(e.target.checked)
+        let field_key = e.target.id
+
+        updateDB(field_key, new_value)
+    }
+
+    function onForeignKeyChange(form) {
+        let field_key = form.html_selected.parentElement.parentElement.parentElement.parentElement.getAttribute('ref_key')
+        let new_value = form.object.id
+
+        updateDB(field_key, new_value)
+    }
+
+    function updateDB(field_key, new_value) {
 
         let form = new FormData
         form.append('model', 'audioclip')
@@ -37,8 +69,86 @@ function ObjectDataPanel(props) {
             url: 'update-object/',
             data: form
         }).then(function(response) {
-            console.log(response)
+            console.log(response.data)
         })
+
+        if (props.onDataUpdate) {props.onDataUpdate()}
+    }
+
+
+    function displayParameter(key) {
+
+        if (field_types) {
+
+            let field_type = field_types[props.keys.indexOf(key)]
+            if (field_type==='CharField') {
+                return (
+                    <div className='data-panel-value'>
+                        <input 
+                            className='data-panel-input'
+                            id={key}
+                            type='text'
+                            defaultValue={String(props.object[key])}
+                        />
+                        <button id={key+'-button'} className='data-panel-update-button' type='button' onClick={onButtonPress}>update</button>
+                    </div>
+                )
+            } else if (field_type==='DecimalField') {
+                return (
+                    <div className='data-panel-value'>
+                        <input
+                            className='data-panel-input'
+                            id={key}
+                            type='number'
+                            step={0.01}
+                            defaultValue={parseFloat(props.object[key])}
+                        />
+                     <button id={key+'-button'} className='data-panel-update-button' type='button' onClick={onButtonPress}>update</button>
+                    </div>
+                )
+            } else if (field_type==='BooleanField') {
+                return (
+                    <div className='data-panel-value'>
+                        <input
+                            className='data-panel-checkbox'
+                            id={key}
+                            type='checkbox'
+                            defaultChecked={props.object[key]}
+                            onClick={onCheckedBox}
+                        />
+                    </div>
+                )
+            } else if (field_type==='ForeignKey') {
+                return (
+                    <div className='data-panel-value-list'>
+                        <SelectionList
+                            list_type='backend-data'
+                            object={['animal']}
+                            selectable={true}
+                            onSelect={onForeignKeyChange}
+                            default_selected={props.object.animal}
+                            style_options={{
+                                height: 'max-content',
+                                width: '100%',
+                            }}
+                        />
+                    </div>
+                )
+            } else return <div>unknown field type</div>
+
+        } else {
+
+            return (
+                <div className='data-panel-value'>
+                    <input 
+                        id={key}
+                        type='text'
+                        defaultValue={String(props.object[key])}
+                    />
+                    <button id={key+'-button'} className='data-panel-update-button' type='button' onClick={onButtonPress}/>
+                </div>
+            )
+        }
     }
 
     return (
@@ -48,17 +158,12 @@ function ObjectDataPanel(props) {
 
                 if (!props.keys || props.keys.includes(key)) {
                     return (
-                        <div className='data-panel-property' key={key}>
-    
+                        <div className='data-panel-property' key={key} ref_key={key}>
+
                             <div className='data-panel-key'>
                                 {key + ': '}
                             </div>
-                            <input id={key} className='data-panel-value'
-                                type='text'
-                                defaultValue={String(props.object[key])}
-                                onInput={onValueChange}
-                            />
-                            <button id={key+'-button'} className='data-panel-update-button' type='button' onClick={onButtonPress}/>
+                            {displayParameter(key)}
     
                         </div>
                     )

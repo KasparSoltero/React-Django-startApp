@@ -23,7 +23,6 @@ function SelectionList(props) {
     const [ selected_header, setSelectedHeader ] = useState(null)
 
     useEffect(() => {
-
         if (props.list_type==='backend-data') {
         
             if (!selected_header) {
@@ -72,21 +71,30 @@ function SelectionList(props) {
 
 
     function handleItemClick(e) {
-
         //send selected item to parent component
-        let pk = e.currentTarget.getAttribute('pk')
-        let selected_db_object = list[selected_header].find((obj) => String(obj.id)===pk)
+        if (e.currentTarget.className==='list-element selectable') {
+            
+            let pk = e.currentTarget.getAttribute('pk')
+            let selected_db_object = list[selected_header].find((obj) => String(obj.id)===pk)
 
-        let form = {
-            html_selected: e.currentTarget,
-            object: selected_db_object
-        }
+            if (props.onSelect) {
+                let form = {
+                    html_selected: e.currentTarget,
+                    object: selected_db_object
+                }
+                props.onSelect(form)
+            }
 
-        if (props.onSelect) props.onSelect(form)
+            //update visuals to show selected component
+            for (let el of document.getElementsByClassName('list-element')) {
 
-        //update visuals to show selected component
-        for (let el of document.getElementsByClassName('list-element')) {
-            el===e.currentTarget? el.className = 'list-element selected' : el.className = 'list-element selectable'
+                if (el===e.currentTarget) {
+                    el.className = 'list-element selected'
+                    // el.setAttribute('onClick', (e)=>null)
+                } else {
+                    el.className = 'list-element selectable'}
+                    // el['onClick'] = (e)=>handleItemClick(e)
+                }
         }
     }
 
@@ -118,7 +126,7 @@ function SelectionList(props) {
         return (
             <div className='selection-list-element-container'>
 
-                {props.display_title? <div className='selection-list-title'>
+                {(props.display_title===undefined || props.display_title)? <div className='selection-list-title'>
                     {String(el.title)}
                 </div> : <div/>}
 
@@ -170,8 +178,12 @@ function SelectionList(props) {
                     }
 
                     if (props.selectable) {
+                        if (props.default_selected && props.default_selected===list_element.id) {
+                            element_props['className'] = 'list-element selected'
+                        } else {
+                            element_props['className'] = 'list-element selectable'
+                        }
                         element_props['onClick'] = (e)=>handleItemClick(e)
-                        element_props['className'] = 'list-element selectable'
                     }
 
                     return (

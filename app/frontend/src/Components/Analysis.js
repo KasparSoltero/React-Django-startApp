@@ -1,23 +1,15 @@
 import './Analysis.css';
 
-import { React, useEffect, useState } from 'react';
-import ReactDOM from 'react-dom';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
-import Wavesurfer from 'wavesurfer.js';
 
 import SelectionList from './SelectionList.js'
 import Waveform from './Waveform.js'
 import Highlights from './Highlights.js'
 import ObjectDataPanel from './ObjectDataPanel.js'
+import MultipleObjectDataPanel from './MultipleObjectDataPanel.js'
 
-// import isChrome from 'react-device-detect'
 import { isChrome } from 'react-device-detect';
-
-//// currently unused packages:
-// import ReactAudioPlayer from 'react-audio-player'
-// var wavSpectro = require('wav-spectrogram');
-// import Sound from 'react-sound';
-// import { Spectrogram } from 'react-spectrogram';
 
 import getCSRF from './getCSRF.js'
 axios.defaults.headers.common["X-CSRFTOKEN"] = getCSRF();
@@ -34,6 +26,8 @@ function Analysis() {
     const [ audio_list, setAudioList ] = useState(0);
 
     const [ selected_audio_clip, setSelectedAudioClip ] = useState(null)
+
+    const [ update_var, setUpdateVar ] = useState(false)
 
 
     function handleAudioSelection(selection) {
@@ -58,6 +52,11 @@ function Analysis() {
         } else {
             setSelectedAudioClip(null)
         }
+    }
+
+
+    function refreshWaveforms() {
+        setUpdateVar(!update_var)
     }
 
 
@@ -110,9 +109,10 @@ function Analysis() {
                         }}
                     />
                     {audio_file ? 
-                        <Highlights 
+                        <Highlights
                             audio_file={audio_file}
                             onSelect={handleHighlightSelection}
+                            update_var={update_var}
                         /> : <div/>}
                 </div>
                 {selected_audio_clip ? 
@@ -120,11 +120,17 @@ function Analysis() {
                         object = {selected_audio_clip}
                         keys = {['title', 'start_time', 'end_time', 'use_as_ref', 'animal']}
                         mutable = {true}
+                        onDataUpdate = {refreshWaveforms}
                         style_options={{
                             // backgroundColor: 'rgb(0,255,0)'
                         }}
                     /> : <div/>}
             </div>
+
+            <MultipleObjectDataPanel
+                model='animal'
+                keys={['color']}
+            />
 
         </div>
     )

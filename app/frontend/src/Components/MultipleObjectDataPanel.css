@@ -1,0 +1,77 @@
+@import '../colors.css';
+
+.temp-object-data-panel {
+    background-color: var(--alt-color);
+    position: absolute;
+    display: inline-block;
+
+    margin: 0px 0px 0px 10px;
+    padding: 5px 0px 5px 0px;
+    text-align: left;
+
+    width: 18%;
+}
+
+.temp-data-panel-key {
+    display: inline-block;
+
+    left: 0;
+    padding: 5px;
+
+    width: 50%;
+    height: 100%;
+}
+
+.temp-data-panel-value {
+    display: inline-block;
+    position: absolute;
+
+    width: 50%;
+    height: 35px;
+    right: 0;
+
+    border-style: none;
+    border-width: 1px;
+    border-color: var(--alt-color);
+}
+
+.data-panel-value-list {
+    display: inline-block;
+    position: absolute;
+    left: 30%;
+    overflow-y: overlay;
+
+    width: 70%;
+    /* height: calc(max-content - '100px'); */
+    /* height: calc(200%); */
+    height: 400%;
+}
+
+.data-panel-input {
+    background-color: var(--main-color);
+    border: none;
+    padding: 5px;
+    height: 99%;
+    width: 50%;
+}
+
+.data-panel-checkbox {
+    background-color: var(--main-color);
+    border: none;
+    position: absolute;
+
+    height: 25px;
+    width: 25px;
+}
+
+.data-panel-update-button {
+    position: absolute;
+    right: 0;
+
+    font-size: 10px;
+    font-weight: bold;
+    /* border: none; */
+    /* border-style: solid;
+    border-width: 1px;
+    border-color: var(--text-color-main) */
+}

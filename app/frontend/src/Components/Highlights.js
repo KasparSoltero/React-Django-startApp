@@ -4,6 +4,7 @@ import axios from 'axios'
 function Highlights(props) {
 
     const [ audio_clips, setAudioClips ] = useState(null)
+    const [ colors, setColors ] = useState(null)
 
     const [ selected_highlight, setSelectedHighlight ] = useState(null);
     const [ is_dragging, setIsDragging] = useState(false);
@@ -15,9 +16,9 @@ function Highlights(props) {
 
 
     useEffect(() => {
-        updateAudioClips()
         setSelectedHighlight(null)
-    }, [props.audio_file])
+        updateAudioClips()
+    }, [props.audio_file, props.update_var])
 
 
     useEffect(()=> {
@@ -45,6 +46,30 @@ function Highlights(props) {
             data: form
         }).then(function(response) {
             setAudioClips(response.data)
+
+            let id_list = []
+            response.data.map((clip)=>{
+                id_list.push(clip.animal)
+            })
+
+            console.log(id_list)
+
+            var form2 = new FormData
+            form2.append('model', 'animal')
+            form2.append('return', 'filtered_list')
+            form2.append('ids', id_list)
+
+            axios({
+                method: 'post',
+                url: 'get-model/',
+                data: form2
+            }).then(function(response) {
+                var color_list=[]
+                response.data.map((animal)=> {
+                    color_list.push(animal.color)
+                })
+                setColors(color_list)
+            })
         })
     }
 
@@ -173,8 +198,10 @@ function Highlights(props) {
             {audio_clips ? audio_clips.map(function(clip) {
                 const duration = parseFloat(props.audio_file.duration)
                 
-                // let color = response.data[i]['color']
-                let color = 'rgba(255,0,0,0.3)'
+                console.log(clip)
+                console.log(colors)
+                console.log(audio_clips.indexOf(clip))
+                let color = (colors && colors[audio_clips.indexOf(clip)]) ? colors[audio_clips.indexOf(clip)] : 'rgba(0,0,0,0.3)'
 
                 let start = parseFloat(clip.start_time)
                 let end = parseFloat(clip.end_time)

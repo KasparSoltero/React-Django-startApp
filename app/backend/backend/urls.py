@@ -17,6 +17,7 @@ urlpatterns = [
     path('update-highlight/', views.updateHighlight),
     path('convolve-audio/', views.convolveAudio),
     path('update-object/', views.updateObject),
+    path('get-field-types/', views.getFieldTypes),
 
     #unused paths
     path('add-denoised/', views.addDenoised),

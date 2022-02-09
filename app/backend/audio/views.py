@@ -47,6 +47,7 @@ def getGenericSerializer(model_arg):
 @api_view(['POST'])
 def getModel(request):
     #returns an object or list of objects from a specified model
+    #model
     #return - 'list' or 'filtered_list' or 'single'
         #filtered_list: currently just for getting all 'AudioClip' objects related to one 'AudioFile'
         #single: 'id': id of object to return
@@ -65,6 +66,10 @@ def getModel(request):
 
             if request.POST['model']=='AudioClip': #need more general solution
                 objects_to_return = model.objects.filter(parent_audio_id=request.POST['id'])
+            
+            elif (request.POST.__contains__('ids') and request.POST['ids']):
+                id_list = list(request.POST['ids'])
+                objects_to_return = model.objects.filter(pk__in=id_list)
 
         elif (request.POST['return'] == 'single'):
 
@@ -518,44 +523,61 @@ def updateObject(request):
     if request.method == 'POST':
 
         model = apps.get_model(app_label="audio", model_name=request.POST['model'])
-
         obj = model.objects.get(pk=request.POST['id'])
-
         field = model._meta.get_field(request.POST['field_key'])
 
         if isinstance(field, django.db.models.fields.CharField):
-            print('char')
+
             setattr(obj, request.POST['field_key'], request.POST['new_value'])
             obj.save()
 
         elif isinstance(field, django.db.models.fields.DecimalField):
-            print('dec')
+
             setattr(obj, request.POST['field_key'], request.POST['new_value'])
             obj.save()
 
         elif isinstance(field, django.db.models.fields.BooleanField):
-            print('bool')
-            if request.POST['new_value'] in ['true', 'false']:
-                new_value = request.POST['new_value'].capitalize()
-            else: new_value = request.POST['new_value']
+
+            new_value = request.POST['new_value'].capitalize()
+            
             setattr(obj, request.POST['field_key'], new_value)
             obj.save()
 
         elif isinstance(field, django.db.models.fields.related.ForeignKey):
-            print('foreign')
-            foreign_model = model = apps.get_model(app_label="audio", model_name=request.POST['field_key'])
-            
-            foreign_object = foreign_model.objects.filter(title=request.POST['new_value'])
 
-            if foreign_object: #animal exists
+            foreign_model = apps.get_model(app_label="audio", model_name=field.verbose_name)
+            foreign_object = foreign_model.objects.filter(id=request.POST['new_value'])
+
+            if foreign_object: #foreign object exists
                 new_value = foreign_object[0]
                 setattr(obj, request.POST['field_key'], new_value)
                 obj.save()
 
-            else: #animal does not exist, create animal
-                print('create new animal...')
+            else: #foreign object does not exist, create new foreign object
+                print('create a new one...')
 
         return HttpResponse('edited object')
+
+
+@api_view(['POST'])
+def getFieldTypes(request):
+    if request.method == 'POST':
+        model = apps.get_model(app_label="audio", model_name=request.POST['model'])
+
+        if request.POST.__contains__('fields'):
+
+            field_names = request.POST['fields'].split(',')
+            types = []
+            for field_name in field_names:
+                field_type = model._meta.get_field(field_name).get_internal_type()
+                types.append(field_type)
+
+        else: #if no specific fields are provided in request, return all fields
+            types = []
+            for field in model._meta.get_fields():
+                types.append(field.get_internal_type())
+
+        return Response(types)
 
 
 

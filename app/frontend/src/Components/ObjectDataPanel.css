@@ -21,7 +21,7 @@
 
     background-color: var(--alt-color);
     position: relative;
-    overflow-y: hidden;
+    /* overflow-y: hidden; */
 }
 
 .data-panel-key {
@@ -39,7 +39,6 @@
     position: absolute;
     left: 30%;
 
-    padding: 5px 5px 4px 5px;
     padding-bottom: -1px;
     width: 70%;
     height: 99%;
@@ -47,12 +46,45 @@
     border-style: solid;
     border-width: 1px;
     border-color: var(--main-color);
+
+    background-color: var(--main-color);
+}
+
+.data-panel-value-list {
+    display: inline-block;
+    position: absolute;
+    left: 30%;
+    overflow-y: overlay;
+
+    width: 70%;
+    /* height: calc(max-content - '100px'); */
+    /* height: calc(200%); */
+    height: 400%;
+}
+
+.data-panel-input {
+    background-color: var(--main-color);
+    border: none;
+    padding: 5px;
+    height: 99%;
+    width: 50%;
+}
+
+.data-panel-checkbox {
+    background-color: var(--main-color);
+    border: none;
+    position: absolute;
+
+    height: 25px;
+    width: 25px;
 }
 
 .data-panel-update-button {
     position: absolute;
     right: 0;
 
+    font-size: 10px;
+    font-weight: bold;
     /* border: none; */
     /* border-style: solid;
     border-width: 1px;
