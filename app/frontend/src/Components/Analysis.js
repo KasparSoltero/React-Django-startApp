@@ -26,7 +26,9 @@ function Analysis() {
 
     const [ selected_audio_clip, setSelectedAudioClip ] = useState(null)
 
-    const [ update_prop, setUpdateProp ] = useState(false)
+    const [ update_data_panel, setUpdateDataPanel ] = useState(false)
+
+    const [ update_highlights, setUpdateHighlights ] = useState(false)
 
     function handleAudioSelection(selection) {
         setAudioFile(()=>selection.object)
@@ -54,8 +56,6 @@ function Analysis() {
 
 
     function handleHighlightSave(object_id) {
-        // console.log('analysis, changing update prop')
-        console.log('analysis, changing selected_audio_clip')
         const form = new FormData
         form.append('return', 'single')
         form.append('model', 'AudioClip')
@@ -67,8 +67,12 @@ function Analysis() {
             data: form,
         }).then((response)=>{
             setSelectedAudioClip(()=>response.data[0])
-            setUpdateProp((update_prop)=>!update_prop)
+            setUpdateDataPanel((update_data_panel)=>!update_data_panel)
         })
+    }
+
+    function handleAudioClipDataChange() {
+        setUpdateHighlights((update_highlights)=>!update_highlights)
     }
 
     function playPauseButtons() {
@@ -90,8 +94,29 @@ function Analysis() {
     }
 
 
+    function handleKeyDown(e) {
+        if (e.code==="Backspace") {
+            if (selected_audio_clip) {
+                //delete selected audio clip on backspace key press
+                let form = new FormData
+                form.append('model', 'audioclip')
+                form.append('id', selected_audio_clip.id)
+                axios({
+                    method: 'post',
+                    url: 'delete-object/',
+                    data: form,
+                }).then((response)=>{
+                    console.log(response)
+                })
+                setUpdateHighlights((update_highlights)=>!update_highlights)
+                setUpdateDataPanel((update_data_panel)=>!update_data_panel)
+            }
+        }
+    }
+
+
     return (
-        <div className='main-box'>
+        <div className='main-box' onKeyDown={(e)=>handleKeyDown(e)} tabIndex="-1">
 
             <SelectionList 
                 list_type='backend-data' 
@@ -124,6 +149,7 @@ function Analysis() {
                             audio_file={audio_file}
                             onSelect={handleHighlightSelection}
                             onHighlightSave={handleHighlightSave}
+                            update_prop={update_highlights}
                         /> : <div/>}
                 </div>
                 {selected_audio_clip ? 
@@ -134,7 +160,8 @@ function Analysis() {
                         style_options={{
                             // backgroundColor: 'rgb(0,255,0)'
                         }}
-                        update_prop = {update_prop}
+                        update_prop = {update_data_panel}
+                        onDataUpdate = {handleAudioClipDataChange}
                     /> : <div/>}
             </div>
 

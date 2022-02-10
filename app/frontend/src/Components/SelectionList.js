@@ -31,6 +31,7 @@ function SelectionList(props) {
 
 
     useEffect(() => {
+        console.log('selection list useeffect called')
         if (props.list_type==='backend-data') {
         
             if (!selected_header) {
@@ -103,11 +104,11 @@ function SelectionList(props) {
             for (let el of document.getElementsByClassName('list-element')) {
 
                 if (el===e.currentTarget) {
+                    console.log('making SELECTED')
                     el.className = 'list-element selected'
-                    // el.setAttribute('onClick', (e)=>null)
                 } else {
+                    console.log('making selectable')
                     el.className = 'list-element selectable'}
-                    // el['onClick'] = (e)=>handleItemClick(e)
                 }
         }
     }

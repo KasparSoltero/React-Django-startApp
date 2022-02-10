@@ -20,7 +20,7 @@ function Highlights(props) {
         setSelectedHighlight(()=>null)
         updateAudioClips()
 
-    }, [props.audio_file] )
+    }, [props.audio_file, props.update_prop] )
 
 
     useEffect(()=> {
@@ -152,6 +152,7 @@ function Highlights(props) {
     function handleHighlightDrag(e) {
         
         setIsDragging(true)
+        console.log(selected_highlight.offsetParent)
 
         let mouse = e.pageX - selected_highlight.offsetParent.offsetLeft
         let left = selected_highlight.offsetLeft
@@ -202,7 +203,7 @@ function Highlights(props) {
 
 
     return (
-        <div>
+        <div key={props.update_prop}>
             {audio_clips ? audio_clips.map(function(clip) {
                 const duration = parseFloat(props.audio_file.duration)
                 

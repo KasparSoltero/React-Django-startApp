@@ -112,6 +112,19 @@ def UploadFilesView(request):
         return HttpResponse('success')
 
 
+@api_view(['POST'])
+def deleteObject(request):
+    if request.method == 'POST':
+
+        model = apps.get_model(app_label="audio", model_name=request.POST['model'])
+        id_to_delete = request.POST['id']
+        model.objects.filter(id=id_to_delete).delete()
+
+        return HttpResponse('deleted object')
+
+
+
+
 #broken!
 def addDenoised(request):
     #denoises and downsamples to 16k
