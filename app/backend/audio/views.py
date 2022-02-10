@@ -59,19 +59,27 @@ def getModel(request):
         serializer = getGenericSerializer(model)
 
         if request.POST['return'] == 'list':
-
+            #retrieve all objects of the model
             objects_to_return = model.objects.all()
 
         elif request.POST['return'] == 'filtered_list':
-
-            if request.POST['model']=='AudioClip': #need more general solution
+            #currently filtered_list handles special cases, could be more generalised solution
+            if request.POST['model']=='AudioClip': 
                 objects_to_return = model.objects.filter(parent_audio_id=request.POST['id'])
             
             elif (request.POST.__contains__('ids') and request.POST['ids']):
-                id_list = list(request.POST['ids'])
-                objects_to_return = model.objects.filter(pk__in=id_list)
+                id_list = request.POST['ids'].split(',')
+                objects_to_return = []
+                for id in id_list:
+                    if id=='':
+                        #if list has blank id, append blank object
+                        objects_to_return.append(model(title='none'))
+                    else: objects_to_return.append(model.objects.filter(pk=id)[0])
+
+            print(objects_to_return)
 
         elif (request.POST['return'] == 'single'):
+            #retrieve a single object selected by object id
 
             objects_to_return = model.objects.filter(pk=request.POST['id'])
 

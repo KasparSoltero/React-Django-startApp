@@ -52,7 +52,7 @@
     border: none;
     padding: 5px;
     height: 99%;
-    width: 50%;
+    width: max-content;
 }
 
 .data-panel-checkbox {

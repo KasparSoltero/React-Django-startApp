@@ -56,9 +56,6 @@ function Highlights(props) {
             response.data.map((clip)=>{
                 id_list.push(clip.animal)
             })
-            
-            console.log('response from audio clip update.. id List of audioClips:')
-            console.log(id_list)
 
             var form2 = new FormData
             form2.append('model', 'animal')
@@ -75,6 +72,9 @@ function Highlights(props) {
                     color_list.push(animal.color)
                 })
                 setColors(color_list)
+                console.log('response data, color map:')
+                console.log(response.data)
+                console.log(color_list)
             })
         })
     }
