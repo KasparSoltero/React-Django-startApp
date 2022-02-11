@@ -3,6 +3,7 @@ import { useEffect, useState, useRef } from 'react'
 import axios from 'axios'
 
 import SelectionList from './SelectionList';
+import DropDown from './DropDown';
 
 import getCSRF from './getCSRF.js'
 axios.defaults.headers.common["X-CSRFTOKEN"] = getCSRF();
@@ -40,6 +41,7 @@ function ObjectDataPanel(props) {
 
     }, [props.object])
 
+
     function onButtonPress(e) {
         let field_key = e.target.id.split('-')[0]
         let input_element = document.getElementById(field_key)
@@ -56,9 +58,9 @@ function ObjectDataPanel(props) {
         updateDB(field_key, new_value)
     }
 
-    function onForeignKeyChange(form) {
-        let field_key = form.html_selected.parentElement.parentElement.parentElement.parentElement.getAttribute('ref_key')
-        let new_value = form.object.id
+    function onForeignKeyChange(object_id) {
+        let field_key = 'animal'
+        let new_value = object_id
 
         updateDB(field_key, new_value)
     }
@@ -127,19 +129,28 @@ function ObjectDataPanel(props) {
                 )
             } else if (field_type==='ForeignKey') {
                 return (
-                    <div className='data-panel-value-list'>
-                        <SelectionList
-                            list_type='backend-data'
-                            object={['animal']}
-                            selectable={true}
-                            onSelect={onForeignKeyChange}
-                            default_selected={props.object.animal}
-                            style_options={{
-                                height: 'max-content',
-                                width: '100%',
-                            }}
-                        />
-                    </div>
+                    // <div className='data-panel-value-list'>
+                    //     <SelectionList
+                    //         list_type='backend-data'
+                    //         object={['animal']}
+                    //         selectable={true}
+                    //         onSelect={onForeignKeyChange}
+                    //         default_selected={props.object.animal}
+                    //         style_options={{
+                    //             height: 'max-content',
+                    //             width: '100%',
+                    //         }}
+                    //     />
+                    // </div>
+                    <DropDown
+                        id={'test'}
+                        model='animal'
+                        default={props.object.animal}
+                        onSelect={onForeignKeyChange}
+                        style_options={{
+                            width: '70%',
+                        }}
+                    />
                 )
             } else return <div>unknown field type</div>
 

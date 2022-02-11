@@ -158,7 +158,7 @@ function Analysis() {
                         keys = {['title', 'start_time', 'end_time', 'use_as_ref', 'animal']}
                         mutable = {true}
                         style_options={{
-                            // backgroundColor: 'rgb(0,255,0)'
+                            width: '50%',
                         }}
                         update_prop = {update_data_panel}
                         onDataUpdate = {handleAudioClipDataChange}

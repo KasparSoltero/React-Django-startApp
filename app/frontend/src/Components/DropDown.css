@@ -1,0 +1,40 @@
+@import '../colors.css';
+
+.drop-down {
+    display: inline-block;
+}
+
+.drop-down-header {
+    padding: 5px 0px 0px 10px;
+    height: 40px;
+    width: 100%;
+    background-color: var(--main-color);
+    display: block;
+
+    border-radius: 5px;
+}
+
+.drop-down-option {
+    padding: 5px 0px 0px 10px;
+    visibility: hidden;
+    height: 0px;
+    width: 100%;
+    background-color: var(--main-color);
+    position: absolute;
+    transition: height .15s ease, background-color .15s ease;
+    display: block;
+}
+
+.drop-down:hover .drop-down-option {
+    height: 40px;
+    visibility: visible;
+    position: relative;
+}
+
+.drop-down:hover .drop-down-header {
+    border-radius: 5px 5px 0px 0px;
+}
+
+.drop-down-option:hover {
+    background-color: var(--select-grey-background-color)
+}

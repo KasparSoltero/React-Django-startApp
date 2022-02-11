@@ -1,12 +1,10 @@
+import './Fourth.css'
+
 import axios, { Axios } from "axios";
 import { useState, useEffect } from 'react';
 
-// import random from math.random
-
-import './Fourth.css'
-import Waveform from './Waveform.js'
-
 import SelectionList from './SelectionList.js'
+import DropDown from './DropDown.js'
 
 function Fourth() {
 
@@ -14,19 +12,19 @@ function Fourth() {
 
     const [ selected_item, setSelectedItem ] = useState(null)
 
-    useEffect(() => {
-        console.log('here')
-    })
-
 
     function handleListSelection(item) {
         setSelectedItem(item)
         setWaveformData(item.object.filedata)
     }
 
+    function onSelect(x) {
+        console.log(x)
+    }
+
     return (
         <div className='main-box'>
-            <SelectionList 
+            {/* <SelectionList 
                 list_type='backend-data' 
                 object={['Animal']}
                 // selectable={true}
@@ -40,6 +38,15 @@ function Fourth() {
                 //     top: '0',
                 //     bottom: '0',
                 // }}
+            /> */}
+            <DropDown
+                id={'test'}
+                model='animal'
+                default={2}
+                onSelect={onSelect}
+                style_options={{
+                    width: '200px',
+                }}
             />
         </div>
     )

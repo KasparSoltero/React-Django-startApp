@@ -102,7 +102,7 @@ function SelectionList(props) {
 
             //update visuals to show selected component
             for (let el of document.getElementsByClassName('list-element')) {
-
+                
                 if (el===e.currentTarget) {
                     console.log('making SELECTED')
                     el.className = 'list-element selected'

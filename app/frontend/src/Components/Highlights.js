@@ -225,7 +225,7 @@ function Highlights(props) {
                         highlight_id={clip.id}
                         style={{
                             width: String(rel_end-rel_start) + "%",
-                            height:'100px',
+                            height:'100px', //should be driven
                             backgroundColor: color,
                             marginLeft: String(rel_start) + "%",
                             top: '0px',

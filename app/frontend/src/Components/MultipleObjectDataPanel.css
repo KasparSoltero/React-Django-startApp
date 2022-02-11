@@ -9,6 +9,10 @@
     padding: 5px 0px 5px 0px;
     text-align: left;
 
+    border-style: solid;
+    border-width: 1px;
+    border-color: var(--thin-line-color);
+
     width: 18%;
 }
 
@@ -25,14 +29,14 @@
 .temp-data-panel-value {
     display: inline-block;
     position: absolute;
+    background-color: var(--alt-color);
+    border: none;
 
     width: 50%;
     height: 35px;
     right: 0;
 
-    border-style: none;
-    border-width: 1px;
-    border-color: var(--alt-color);
+    padding: 3px;
 }
 
 .data-panel-value-list {
@@ -74,4 +78,12 @@
     /* border-style: solid;
     border-width: 1px;
     border-color: var(--text-color-main) */
+}
+::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+::-webkit-color-swatch {
+    border-radius: 5px;
+    /* flex-grow: 0; */
+    flex-shrink: 0;
 }
