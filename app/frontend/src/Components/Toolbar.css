@@ -1,0 +1,45 @@
+@import '../colors.css';
+
+.toolbar {
+    display: flex;
+    background-color: var(--pastel-magenta);
+    padding: 10px;
+    position: relative;
+    left: 0;
+}
+
+.playpause-button {
+    width: 80px;
+
+    border: solid 1px transparent;
+    border-radius: 15px;
+    margin-right: 5px;
+    background-color: var(--main-color);
+    transition: border-color .25s ease;
+}
+
+.playpause-button.paused:hover {
+    border-color:var(--magenta);
+}
+
+.playpause-button.playing {
+    background-color: var(--magenta)
+}
+
+.highlight-tool {
+    width: 120px;
+
+    border: solid 1px transparent;
+    border-radius: 15px;
+    margin-right: 5px;
+    background-color: var(--main-color);
+    transition: border-color .25s ease;
+}
+
+.highlight-tool:hover {
+    border-color:var(--magenta);
+}
+
+.highlight-tool.true {
+    background-color: var(--magenta)
+}

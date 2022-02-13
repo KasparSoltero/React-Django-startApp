@@ -8,32 +8,35 @@ import Waveform from './Waveform.js'
 import Highlights from './Highlights.js'
 import ObjectDataPanel from './ObjectDataPanel.js'
 import MultipleObjectDataPanel from './MultipleObjectDataPanel.js'
+import Toolbar from './Toolbar'
 
 import { isChrome } from 'react-device-detect';
 
 import getCSRF from './getCSRF.js'
 axios.defaults.headers.common["X-CSRFTOKEN"] = getCSRF();
 
-//initialise
-var original_wavesurfer = null;
-var processed_wavesurfer = null;
 
-const waveform_height = 200;
 
 function Analysis() {
 
     const [ audio_file, setAudioFile ] = useState(null);
+
+    const [ wavesurfer, setWavesurfer ] = useState(null);
 
     const [ selected_audio_clip, setSelectedAudioClip ] = useState(null)
 
     const [ update_data_panel, setUpdateDataPanel ] = useState(false)
 
     const [ update_highlights, setUpdateHighlights ] = useState(false)
+    const [ highlight_tool, setHighlightTool ] = useState(false)
 
     function handleAudioSelection(selection) {
         setAudioFile(()=>selection.object)
     }
 
+    function sendWavesurfer(wavesurfer) {
+        setWavesurfer(wavesurfer)
+    } 
 
     function handleHighlightSelection(selection) {
         if (selection.html_selected) {
@@ -71,28 +74,9 @@ function Analysis() {
         })
     }
 
-    function handleAudioClipDataChange() {
+    function updateHighlights() {
         setUpdateHighlights((update_highlights)=>!update_highlights)
     }
-
-    function playPauseButtons() {
-
-        return (
-            <div>
-                <button className='playpausebutton' onClick={function() {
-                    if (original_wavesurfer != undefined) {
-                        original_wavesurfer.playPause()
-                    }
-                }}>Play/Pause original</button>
-                <button className='playpausebutton' onClick={function() {
-                    if (processed_wavesurfer != undefined) {
-                        processed_wavesurfer.playPause()
-                    }
-                }}>Play/Pause denoised</button>
-            </div>
-        )
-    }
-
 
     function handleKeyDown(e) {
         if (e.code==="Backspace") {
@@ -115,9 +99,12 @@ function Analysis() {
     }
 
 
+    useEffect(() => {
+        console.log(highlight_tool)
+    }, [highlight_tool])
+
     return (
         <div className='main-box' onKeyDown={(e)=>handleKeyDown(e)} tabIndex="-1">
-
             <SelectionList 
                 list_type='backend-data' 
                 object={['audiofile']}
@@ -131,18 +118,27 @@ function Analysis() {
                 }}
             />
 
-            {/* {playPauseButtons()} */}
-
             <div className='analyse-audio-container'>
+                <Toolbar
+                    wavesurfer={wavesurfer}
+                    playpause={true}
+                    highlights={true}
+                    highlight_tool={highlight_tool}
+                    setHighlightTool={setHighlightTool}
+                />
                 <div className='wavesurfer-container'>
                     <Waveform
                         spectrogram={true}
+                        audio_file={audio_file}
                         //if chrome is used, visuals are generated from original audio, else from denoised audio
                         filedata={audio_file? (audio_file.denoised_filedata? (isChrome? audio_file.filedata : audio_file.denoised_filedata) : null) : null}
                         wave_height={150}
                         spec_height={'150px'}
                         style_options={{
                         }}
+                        callOnReady={sendWavesurfer}
+                        highlight_tool={highlight_tool}
+                        onHighlightCreate={updateHighlights}
                     />
                     {audio_file ? 
                         <Highlights
@@ -162,7 +158,7 @@ function Analysis() {
                             height: 'calc(45px * 5 + 15px)',
                         }}
                         update_prop = {update_data_panel}
-                        onDataUpdate = {handleAudioClipDataChange}
+                        onDataUpdate = {updateHighlights}
                     /> : <div/>}
             </div>
 

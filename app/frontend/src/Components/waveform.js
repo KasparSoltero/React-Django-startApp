@@ -23,7 +23,6 @@ function Waveform(props) {
     //wave_height - integer height of display in px     default 100
     //style_options - css style options passed to the waveform container
 
-
     // chrome can't open the denoised files saved by django for some reason
 
     useEffect(() => {
@@ -79,15 +78,33 @@ function Waveform(props) {
             }
 
             //call provided callOnReady function
-            if (props.callOnReady) {props.callOnReady()}
+            if (props.callOnReady) {props.callOnReady(wavesurfer)}
         })
         
         wavesurfer.load(props.filedata)
     }
 
+    function handleWaveClick(e) {
+        if (props.highlight_tool) {
+
+            var form = new FormData
+            form.append('parent_id', props.audio_file.id)
+            form.append('title', 'new_clip')
+
+            axios({
+                method: 'post',
+                url: 'temp-create-highlight/',
+                data: form,
+            }).then((response)=>{
+                props.onHighlightCreate()
+                console.log(response)
+            })
+        }
+    }
+
     if (props.filedata) {return (
         <div style={props.style_options? {...props.style_options} : null}>
-            <div id='wave'/>
+            <div id='wave' onClick={(e)=>handleWaveClick(e)}/>
             <div id='spec'/>
         </div>
     )} else return <div/>

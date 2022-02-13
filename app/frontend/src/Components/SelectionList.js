@@ -31,7 +31,6 @@ function SelectionList(props) {
 
 
     useEffect(() => {
-        console.log('selection list useeffect called')
         if (props.list_type==='backend-data') {
         
             if (!selected_header) {

@@ -63,9 +63,6 @@
     background-color: var(--main-color);
     border: none;
     position: absolute;
-
-    /* height: 25px;
-    width: 25px; */
 }
 
 .data-panel-update-button {

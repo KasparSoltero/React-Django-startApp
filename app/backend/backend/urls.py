@@ -20,6 +20,8 @@ urlpatterns = [
     path('get-field-types/', views.getFieldTypes),
     path('delete-object/', views.deleteObject),
 
+    path('temp-create-highlight/', views.tempCreateHighlight),
+
     #unused paths
     path('add-denoised/', views.addDenoised),
     path('retrieve-audio/', views.retrieveAudioView),

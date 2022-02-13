@@ -540,6 +540,23 @@ def convolveAudio(request):
 
 
 @api_view(['POST'])
+def tempCreateHighlight(request):
+    if request.method == 'POST':
+
+        parent_audio = AudioFile.objects.get(pk=request.POST['parent_id'])
+
+        newclip = AudioClip.objects.create(
+            title = request.POST['title'], 
+            parent_audio = parent_audio,
+            start_time = round(0),
+            end_time = round(1)
+        )
+
+        newclip.save()
+
+        return HttpResponse('success')
+
+@api_view(['POST'])
 def updateObject(request):
     if request.method == 'POST':
 
