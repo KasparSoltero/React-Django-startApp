@@ -65,9 +65,6 @@ function DropDown(props) {
 
     function handleClick(e) {
         props.onSelect(e.target.getAttribute('object_id'))
-        
-        //vanish menu
-        let container = document.querySelector('.drop-down#'+props.id)
 
         //change selected object
         let new_current = objects.find((element)=>String(element.id)===String(e.target.getAttribute('object_id')))

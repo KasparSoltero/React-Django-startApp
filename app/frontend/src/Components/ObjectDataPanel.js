@@ -129,26 +129,17 @@ function ObjectDataPanel(props) {
                 )
             } else if (field_type==='ForeignKey') {
                 return (
-                    // <div className='data-panel-value-list'>
-                    //     <SelectionList
-                    //         list_type='backend-data'
-                    //         object={['animal']}
-                    //         selectable={true}
-                    //         onSelect={onForeignKeyChange}
-                    //         default_selected={props.object.animal}
-                    //         style_options={{
-                    //             height: 'max-content',
-                    //             width: '100%',
-                    //         }}
-                    //     />
-                    // </div>
                     <DropDown
                         id={'test'}
                         model='animal'
                         default={props.object.animal}
                         onSelect={onForeignKeyChange}
                         style_options={{
-                            width: '70%',
+                            width: 'calc(70% + 20px)',
+                            margin: '-10px -10px 0 -10px',
+                            backgroundColor: 'var(--pastel-magenta)',
+                            padding: '10px',
+                            borderRadius: '5px',
                         }}
                     />
                 )

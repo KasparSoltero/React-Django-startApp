@@ -158,7 +158,8 @@ function Analysis() {
                         keys = {['title', 'start_time', 'end_time', 'use_as_ref', 'animal']}
                         mutable = {true}
                         style_options={{
-                            width: '50%',
+                            width: 'calc(50% - 10px)',
+                            height: 'calc(45px * 5 + 15px)',
                         }}
                         update_prop = {update_data_panel}
                         onDataUpdate = {handleAudioClipDataChange}
@@ -168,6 +169,9 @@ function Analysis() {
             <MultipleObjectDataPanel
                 model='animal'
                 keys={['color']}
+                style_options={{
+                    width: 'calc(20% - 40px + 18px)',
+                }}
             />
 
         </div>

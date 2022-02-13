@@ -6,7 +6,7 @@
 
 .drop-down-header {
     padding: 5px 0px 0px 10px;
-    height: 40px;
+    height: 35px;
     width: 100%;
     background-color: var(--main-color);
     display: block;
@@ -26,7 +26,7 @@
 }
 
 .drop-down:hover .drop-down-option {
-    height: 40px;
+    height: 35px;
     visibility: visible;
     position: relative;
 }

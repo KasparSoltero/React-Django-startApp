@@ -139,8 +139,7 @@ function SelectionList(props) {
         }
 
         return (
-            <div className='selection-list-element-container'>
-
+            <div>
                 {(props.display_title===undefined || props.display_title)? <div className='selection-list-title'>
                     {String(el.title)}
                 </div> : <div/>}
@@ -152,7 +151,6 @@ function SelectionList(props) {
                 </audio> : <div/>}
 
                 {props.display_data? displayData() : <div/>}
-
             </div>
         )
     }
@@ -174,7 +172,7 @@ function SelectionList(props) {
                             {object}
                         </div>
                     )
-                }) : <div/>}
+                }) : null}
             </div>
             
             <div className='list-elements-container' style={
