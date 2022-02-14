@@ -556,6 +556,24 @@ def tempCreateHighlight(request):
 
         return HttpResponse('success')
 
+
+@api_view(["POST"])
+def getMetrics(request):
+    if request.method == 'POST':
+
+        result = {}
+        result['Audiofiles:'] = len(AudioFile.objects.all())
+        result['Audioclips:'] = len(AudioClip.objects.all())
+
+        result['Possum clips:']=len(Animal.objects.get(title='possum').audioclip_set.all())
+        result['Cat clips:']=len(Animal.objects.get(title='cat').audioclip_set.all())
+        result['Stoat clips:']=len(Animal.objects.get(title='stoat').audioclip_set.all())
+        result['Hedgehog clips:']=len(Animal.objects.get(title='hedgehog').audioclip_set.all())
+        result['Unclassified:']=result['Audioclips:']-result['Possum clips:']-result['Cat clips:']-result['Stoat clips:']-result['Hedgehog clips:']
+
+        return Response(result)
+
+
 @api_view(['POST'])
 def updateObject(request):
     if request.method == 'POST':

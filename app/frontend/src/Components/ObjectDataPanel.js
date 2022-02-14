@@ -138,7 +138,7 @@ function ObjectDataPanel(props) {
                             width: 'calc(70% + 20px)',
                             margin: '-10px -10px 0 -10px',
                             backgroundColor: 'var(--pastel-magenta)',
-                            padding: '10px',
+                            padding: '9px',
                             borderRadius: '5px',
                         }}
                     />
@@ -164,7 +164,7 @@ function ObjectDataPanel(props) {
     return (
         <div key={String(props.update_prop)+String(props.object.id)} className='object-data-panel'style={props.style_options? {...props.style_options} : null}>
 
-            {Object.keys(props.object).map(function(key) {
+            {/* {Object.keys(props.object).map(function(key) {
 
                 if (!props.keys || props.keys.includes(key)) {
                     return (
@@ -178,6 +178,21 @@ function ObjectDataPanel(props) {
                         </div>
                     )
                 }
+            })} */}
+
+            {props.keys.map(function(key) {
+
+                // Object.keys(props.object)
+                    return (
+                        <div className='data-panel-property' key={key} ref_key={key}>
+
+                            <div className='data-panel-key'>
+                                {key + ': '}
+                            </div>
+                            {displayParameter(key)}
+    
+                        </div>
+                    )
             })}
         </div>
     )

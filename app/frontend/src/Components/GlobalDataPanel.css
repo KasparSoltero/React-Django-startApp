@@ -1,0 +1,29 @@
+@import '../colors.css';
+
+.global-data-panel {
+    display: inline-block;
+    position: absolute;
+    right: 0;
+    width: calc(30%);
+    text-align: left;
+    margin: 10px 0 10px 0;
+    border: solid var(--neon-magenta);
+    border-width: 2px 0 2px 2px;
+    border-radius: 5px 0 0 5px;
+    padding: 10px;
+
+    background-color: var(--pastel-magenta);
+}
+
+.global-data-key {
+    display: inline-block;
+}
+
+.global-data-value {
+    display: inline-block;
+    background-color: var(--magenta-soft);
+    position: absolute;
+    left: 60%;
+    padding: 0px 5px;
+    width: 25%;
+}

@@ -2,6 +2,7 @@
 
 .toolbar {
     display: flex;
+    width: 100%;
     background-color: var(--pastel-magenta);
     padding: 10px;
     position: relative;

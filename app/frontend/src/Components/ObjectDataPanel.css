@@ -1,17 +1,19 @@
 @import '../colors.css';
 
 .object-data-panel {
-    /* background-color: var(--alt-color); */
-
+    display: inline-block;
     margin: 10px 0px 10px 0px;
-    padding: 10px 10px 10px 20px;
+    padding: 10px 10px 12px 20px;
+    position: absolute;
+    left: 0;
     text-align: left;
 
     background-color: var(--pastel-magenta);
     border-radius: 0 5px 5px 0;
+    border: solid var(--neon-magenta);
+    border-width: 2px 2px 2px 0;
 
     width: calc(100%-20px);
-
 }
 
 .data-panel-property {
@@ -23,15 +25,12 @@
 
     background-color: var(--magenta-pastel);
     position: relative;
-    /* overflow-y: hidden; */
 }
 
 .data-panel-key {
-    /* position: absolute; */
     left: 0;
     float: left;
     padding: 5px;
-    /* margin: 5px; */
     width: 30%;
     height: 100%;
 }

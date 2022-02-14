@@ -19,6 +19,7 @@ urlpatterns = [
     path('update-object/', views.updateObject),
     path('get-field-types/', views.getFieldTypes),
     path('delete-object/', views.deleteObject),
+    path('get-metrics/', views.getMetrics),
 
     path('temp-create-highlight/', views.tempCreateHighlight),
 

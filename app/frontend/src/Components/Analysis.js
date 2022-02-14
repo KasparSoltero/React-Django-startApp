@@ -9,6 +9,7 @@ import Highlights from './Highlights.js'
 import ObjectDataPanel from './ObjectDataPanel.js'
 import MultipleObjectDataPanel from './MultipleObjectDataPanel.js'
 import Toolbar from './Toolbar'
+import GlobalDataPanel from './GlobalDataPanel.js'
 
 import { isChrome } from 'react-device-detect';
 
@@ -154,12 +155,15 @@ function Analysis() {
                         keys = {['title', 'start_time', 'end_time', 'use_as_ref', 'animal']}
                         mutable = {true}
                         style_options={{
-                            width: 'calc(50% - 10px)',
-                            height: 'calc(45px * 5 + 15px)',
+                            width: '50%',
+                            height: 'calc(45px * 5 + 16px)',
                         }}
                         update_prop = {update_data_panel}
                         onDataUpdate = {updateHighlights}
                     /> : <div/>}
+                <GlobalDataPanel
+                    prop = 'none'
+                />
             </div>
 
             <MultipleObjectDataPanel

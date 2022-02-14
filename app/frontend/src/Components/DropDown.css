@@ -12,6 +12,7 @@
     display: block;
 
     border-radius: 5px;
+    border: solid 1px transparent;
 }
 
 .drop-down-option {
@@ -21,8 +22,9 @@
     width: 100%;
     background-color: var(--main-color);
     position: absolute;
-    transition: height .15s ease, background-color .15s ease;
+    transition: height .15s ease, background-color .15s ease, border 0.15s ease;
     display: block;
+    border: solid 1px transparent;
 }
 
 .drop-down:hover .drop-down-option {
@@ -36,5 +38,6 @@
 }
 
 .drop-down-option:hover {
-    background-color: var(--select-grey-background-color)
+    background-color: var(--light-grey);
+    cursor: pointer;
 }
