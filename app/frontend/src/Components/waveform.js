@@ -4,6 +4,8 @@ import axios from 'axios'
 
 import Wavesurfer from 'wavesurfer.js';
 import SpectrogramPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.spectrogram.min.js';
+// import Timeline from 'wavesurfer.js/dist/plugin/wavesurfer.timeline.min.js';
+import TimelinePlugin from 'wavesurfer.js/dist/plugin/wavesurfer.timeline.min.js';
 
 const colormap = require('colormap');
 
@@ -45,7 +47,7 @@ function Waveform(props) {
             waveColor: 'black',
             normalize: true,
 
-            plugins: props.spectrogram ? [
+            plugins: [
                 SpectrogramPlugin.create({
                     wavesurfer: wavesurfer,
                     container: '#spec',
@@ -54,11 +56,16 @@ function Waveform(props) {
                     style: {
                         position: 'fixed',
                     }
+                }),
+                TimelinePlugin.create({
+                    container:"#timeline"
                 })
-            ] : []
+            ]
         });
 
         wavesurfer.on('ready', function () {
+            
+
             //adjust spectrogram layout to display correctly
             if (document.getElementsByTagName('spectrogram')[0]) {
                 let sg = document.getElementsByTagName('spectrogram')[0]
@@ -106,6 +113,7 @@ function Waveform(props) {
         <div style={props.style_options? {...props.style_options} : null}>
             <div id='wave' onClick={(e)=>handleWaveClick(e)}/>
             <div id='spec'/>
+            <div id='timeline'/>
         </div>
     )} else return <div/>
 }

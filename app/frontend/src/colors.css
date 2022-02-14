@@ -27,10 +27,10 @@
     --magenta-soft: rgba(212, 89, 231,0.3);
     /* --neon-blue-soft: rgb(122, 206, 255); */
     /* --pastel-blue: rgb(175, 202, 233); */
-    /* --blue: rgb(89, 179, 231); */
+    --blue: rgb(0, 200, 214);
     --pastel-blue: rgb(178, 233, 225);
-    --blue: rgb(0, 255, 221);
-    --neon-blue-soft: rgb(144, 255, 240);
+    --neon-blue: rgb(0, 255, 221);
+    --neon-blue-soft: rgb(122, 226, 212);
     --light-grey: rgb(218, 214, 218);
   }
 

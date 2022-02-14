@@ -79,7 +79,7 @@
 }
 
 .list-element.selected {
-    background-color: var(--blue);
+    background-color: var(--neon-blue);
 }
 
 .selection-list-title {
