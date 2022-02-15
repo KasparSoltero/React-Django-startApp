@@ -32,6 +32,10 @@
     --neon-blue: rgb(0, 255, 221);
     --neon-blue-soft: rgb(122, 226, 212);
     --light-grey: rgb(218, 214, 218);
+
+    --pastel-yellow: rgb(255, 248, 202);
+    --yellow: rgb(255, 246, 184);
+    --neon-yellow: rgb(255, 227, 52);
   }
 
 

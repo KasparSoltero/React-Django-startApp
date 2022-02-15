@@ -77,7 +77,7 @@ function Upload_Audio() {
     function uploadFilesToDB() {
         //Send group of files to backend, which then uploads them one by one
 
-        var uploadData = document.getElementById('uploadFiles').files
+        var uploadData = document.getElementById('file-input').files
         var numFiles = uploadData['length'];
 
         for (let i = 0; i<numFiles; i++) {
@@ -97,45 +97,48 @@ function Upload_Audio() {
     return (
         <div className='main-box'>
 
-            <div className='process-audios-container'>
-                <button className='process-audios-button' onClick={()=>denoiseNewAudios()}>Denoise</button>
-                <button className='process-audios-button' onClick={()=>convolveNewAudios()}>Convolve</button>
+            <div className='upload-button-container'>
+                <div className='upload-audio-container-two' style={{backgroundColor:'var(--pastel-yellow)'}}>
+                    <input name='file-input' type='file' id='file-input' multiple/>
+                    <button id='upload-button' onClick={() => uploadFilesToDB()}>
+                        Upload files
+                    </button>
+                </div>
+            </div>
+            <div className='upload-data-container'>
+                <SelectionList 
+                    list_type='backend-data' 
+                    object={['AudioFile', 'AudioClip']}
+                    // selectable={false}
+                    // updateSelected={}
+                    display_audio={true}
+                    display_title={true}
+                    style_options={{
+                        width: '100%',
+                        display: 'inline-block',
+                        right: '0',
+                        top: '40px',
+                        bottom: '0px',
+                    }}
+                    display_data={{
+                        bool: [{
+                            data: 'denoised_filedata',
+                            title: 'Denoised',
+                        }, {
+                            data: 'use_as_ref',
+                            title: 'ref',
+                            colors: ['rgb(100,0,200)','rgb(0,200,100)']
+                        }],
+                    }}
+                />
             </div>
 
-            <SelectionList 
-                list_type='backend-data' 
-                object={['AudioFile', 'AudioClip']}
-                // selectable={false}
-                // updateSelected={}
-                // display_audio={true}
-                display_title={true}
-                style_options={{
-                    width: '40%',
-                    position: 'absolute',
-                    right: '0',
-                    top: '40px',
-                    bottom: '0px',
-                    height: '85%',
-                }}
-                display_data={{
-                    bool: [{
-                        data: 'denoised_filedata',
-                        title: 'Denoised',
-                    }, {
-                        data: 'use_as_ref',
-                        title: 'ref',
-                        colors: ['rgb(100,0,200)','rgb(0,200,100)']
-                    }],
-                }}
-            />
-            
-            <input name='uploadFiles' type='file' id='uploadFiles' multiple/>
-            <button className='uploadbutton' onClick={() => uploadFilesToDB()}>
-                Upload files to database!
-            </button>
-            {/* <button className='uploadbutton' onClick={() => uploadFilesasrefTemp()}>
-                Upload files as reference clips!
-            </button> */}
+            <div className='process-audios-container'>
+                <div className='upload-audio-container-two' style={{backgroundColor:'var(--pastel-magenta)'}}>
+                    <button className='process-audios-button' onClick={()=>denoiseNewAudios()}>Denoise</button>
+                    <button className='process-audios-button' onClick={()=>convolveNewAudios()}>Convolve</button>
+                </div>
+            </div>
 
         </div>
     )

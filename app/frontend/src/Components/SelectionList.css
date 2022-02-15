@@ -45,7 +45,8 @@
 }
 
 .list-header.selectable:hover {
-    background-color: var(--neon-blue-soft)
+    background-color: var(--neon-blue-soft);
+    cursor: pointer;
 }
 .list-header.selected {
     background-color: var(--neon-blue-soft)
