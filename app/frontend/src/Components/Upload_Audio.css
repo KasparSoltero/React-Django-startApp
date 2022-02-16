@@ -86,9 +86,9 @@
     display: block;
     background-color: var(--main-color);
 
-    margin-left: 25%;
+    margin-left: 12.5%;
     margin-bottom: 10px;
-    width: 50%;
+    width: 75%;
     height: 40px;
 
     border: solid 2px transparent;
@@ -99,5 +99,10 @@
 }
 
 .process-audios-button:hover {
+    border-color: var(--neon-magenta);
+}
+
+.process-audios-button.denoising {
+    background-color: var(--pastel-magenta);
     border-color: var(--neon-magenta);
 }

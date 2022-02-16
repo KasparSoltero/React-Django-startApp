@@ -20,11 +20,12 @@ urlpatterns = [
     path('get-field-types/', views.getFieldTypes),
     path('delete-object/', views.deleteObject),
     path('get-metrics/', views.getMetrics),
+    path('denoise-new/', views.denoiseNew),
 
     path('temp-create-highlight/', views.tempCreateHighlight),
 
     #unused paths
-    path('add-denoised/', views.addDenoised),
+    # path('add-denoised/', views.addDenoised),
     path('retrieve-audio/', views.retrieveAudioView),
     path('add-reference-temp/', views.addReferenceTemp),
     path('get-related-noiseclips/', views.getRelatedNoiseclips),

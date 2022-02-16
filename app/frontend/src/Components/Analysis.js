@@ -100,10 +100,6 @@ function Analysis() {
     }
 
 
-    useEffect(() => {
-        console.log(highlight_tool)
-    }, [highlight_tool])
-
     return (
         <div className='main-box' onKeyDown={(e)=>handleKeyDown(e)} tabIndex="-1">
             <SelectionList 

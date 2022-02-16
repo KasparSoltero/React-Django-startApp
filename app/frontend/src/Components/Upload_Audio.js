@@ -14,32 +14,28 @@ axios.defaults.headers.common["X-CSRFTOKEN"] = getCSRF();
 
 function Upload_Audio() {
 
-    const [audioList, setAudioList] = useState(0);
-
     function denoiseNewAudios() {
         //Denoise unprocessed audio files
 
-        if (audioList) {
-            audioList.data.map(function(audio) {
-                console.log(audio)
-                if (!audio.denoisedFile) {
-                    console.log('here')
+        var denoise_button = document.getElementById('denoise')
+        denoise_button.innerHTML = 'denoising...'
+        denoise_button.className='process-audios-button denoising'
 
-                    const formdata =  new FormData();
-                    formdata.append('id', audio.id)
+        const form =  new FormData();
+        form.append('id', 'tomato')
 
-                    axios({
-                        method: 'post',
-                        url: '/add-denoised/',
-                        data: formdata
-                    }).then((response) => console.log(response))
-
-                } else console.log('already processed')
-            })
-        }
+        axios({
+            method: 'post',
+            url: 'denoise-new/',
+            data: form
+        }).then((response) => {
+            console.log(response)
+            denoise_button.innerHTML = 'Denoise New'
+            denoise_button.className = 'process-audios-button'
+        })
     }
 
-
+    
     function convolveNewAudios() {
         //Convolve unprocessed audio files
 
@@ -58,16 +54,18 @@ function Upload_Audio() {
             let related_audioclips = response.data[1]
             //check if each one has been convolved
             for (let i=0; i<audio_files.length; i++) {
-                if (related_audioclips[i] === 'audio.AudioClip.None') {
+                if (related_audioclips[i] === '<QuerySet []>') {
                     //convolve if not
-                    const form =  new FormData();
+                    const form =  new FormData;
                     form.append('id', audio_files[i].id)
 
                     axios({
                         method: 'post',
                         url: '/convolve-audio/',
                         data: form
-                    }).then((response) => console.log(response))
+                    }).then((response) => {
+                        console.log(response)
+                    })
                 }
             }
         })
@@ -123,11 +121,11 @@ function Upload_Audio() {
                     display_data={{
                         bool: [{
                             data: 'denoised_filedata',
-                            title: 'Denoised',
+                            title: 'denoised',
                         }, {
                             data: 'use_as_ref',
                             title: 'ref',
-                            colors: ['rgb(100,0,200)','rgb(0,200,100)']
+                            // colors: ['rgb(100,0,200)','rgb(0,200,100)']
                         }],
                     }}
                 />
@@ -135,8 +133,8 @@ function Upload_Audio() {
 
             <div className='process-audios-container'>
                 <div className='upload-audio-container-two' style={{backgroundColor:'var(--pastel-magenta)'}}>
-                    <button className='process-audios-button' onClick={()=>denoiseNewAudios()}>Denoise</button>
-                    <button className='process-audios-button' onClick={()=>convolveNewAudios()}>Convolve</button>
+                    <button className='process-audios-button' onClick={()=>denoiseNewAudios()} id='denoise'>Denoise New</button>
+                    <button className='process-audios-button' onClick={()=>convolveNewAudios()} id='convolve'>Convolve New</button>
                 </div>
             </div>
 

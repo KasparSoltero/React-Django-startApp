@@ -88,7 +88,7 @@ def getModel(request):
         if request.POST.__contains__('add_related_models'):
             temp = []
             for obj in objects_to_return:
-                temp.append(str(obj.audioclip_set))
+                temp.append(str(obj.audioclip_set.all()))
 
             objects_to_return.related_models = temp
             serializer = serializer(objects_to_return, many=True)
@@ -123,44 +123,34 @@ def deleteObject(request):
         return HttpResponse('deleted object')
 
 
-
-
-#broken!
-def addDenoised(request):
-    #denoises and downsamples to 16k
-
+@api_view(['POST'])
+def denoiseNew(request):
     if request.method == 'POST':
+        for audio_object in AudioFile.objects.filter(denoised_filedata=''):
+            
+            recording, sample_rate = librosa.load(audio_object.filedata, sr=None)
 
-        audioID = request.POST['id']
-        
-        audioObject = AudioFile.objects.get(id=audioID)
+            audio_object.duration = round(len(recording)/sample_rate, 2)
 
-        recording, sample_rate = librosa.load(audioObject.filedata, sr=None)
+            denoisedRecording = denoise(recording)
 
-        audioObject.duration = round(len(recording)/sample_rate, 2)
+            #denoised files are all downsampled to 16000 for consistency
+            denoisedRecording = downsample(denoisedRecording, sample_rate, rate=16000)
 
-        denoisedRecording = denoise(recording)
+            # need to adjust denoised recording samplerate to conserve clip duration, denoised length is different to original length!
 
-        denoisedRecording = downsample(denoisedRecording, sample_rate, rate=16000)
+            wave.write('denoised-temp.wav', rate = 16000, data = denoisedRecording)
+            
+            #change file form into one django can handle
+            f =  open('denoised-temp.wav', 'rb')
+            denoisedRecording = File(f)
 
-        # need to adjust denoised recording samplerate to conserve clip duration, denoised length is different to original length!
+            denoisedTitle = audio_object.title.split('.wav')[0] + '_denoised.wav'
 
-        wave.write('denoised-temp.wav', rate = 16000, data = denoisedRecording)
+            #save downsampled and denoised audiofile to 
+            audio_object.denoised_filedata.save(denoisedTitle, denoisedRecording)
 
-        # print(f'{audioObject} sample rate is {sample_rate}')
-        # recording = downsample(recording, sample_rate, rate=16000)
-        # wave.write('denoised-temp.wav', rate = 16000, data = recording)
-        
-        #change file form into one django can handle
-        f =  open('denoised-temp.wav', 'rb')
-        denoisedRecording = File(f)
-
-        denoisedTitle = audioObject.title.split('.wav')[0] + '_denoised.wav'
-
-        #save downsampled and denoised audiofile to 
-        audioObject.denoisedFile.save(denoisedTitle, denoisedRecording)
-
-        return HttpResponse('success')
+        return HttpResponse('helo')
 
 
 def denoise(recording):
@@ -505,6 +495,7 @@ def convolveAudio(request):
                 print(f'here are the timestamps for {audioObject}:')
                 print(f'startTime: {round(stamp[0] / 16000, 2)}')
                 print(f'endTime: {round(stamp[1] / 16000, 2)}')
+                print(f'calls[i]: {calls[i]}')
 
                 newclip = AudioClip.objects.create(
                     title = noiseclipTitle, 
@@ -545,6 +536,7 @@ def tempCreateHighlight(request):
 
         parent_audio = AudioFile.objects.get(pk=request.POST['parent_id'])
 
+        #create a new audioclip object from 0s - 1s
         newclip = AudioClip.objects.create(
             title = request.POST['title'], 
             parent_audio = parent_audio,
@@ -553,6 +545,16 @@ def tempCreateHighlight(request):
         )
 
         newclip.save()
+
+        #add the filedata to the newly created audioclip object
+        sampleRate, signal = wave.read(parent_audio.denoised_filedata)
+        seg = signal[0:16000]
+        wave.write('noiseclip-temp.wav', rate = 16000, data = seg)
+        f =  open('noiseclip-temp.wav', 'rb')
+        audio_clip = File(f)
+        noiseclipTitle = parent_audio.title.split('.wav')[0] + f'_clip_x.wav'
+        newclip.filedata.save(noiseclipTitle, audio_clip)
+
 
         return HttpResponse('success')
 

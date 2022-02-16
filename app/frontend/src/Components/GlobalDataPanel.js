@@ -16,16 +16,14 @@ function GlobalDataPanel(props) {
             data: form,
         }).then((response)=>{
             setList(response.data)
-            console.log(response.data)
         })
     }, [props])
 
     return (
         <div className='global-data-panel'>
             {list? Object.entries(list).map((x)=>{
-                console.log(x)
                 return (
-                    <div>
+                    <div key={x}>
                         <div className='global-data-key'>
                             {x[0]}
                         </div>
