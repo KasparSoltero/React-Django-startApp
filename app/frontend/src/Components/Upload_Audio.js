@@ -109,7 +109,7 @@ function Upload_Audio() {
                     object={['AudioFile', 'AudioClip']}
                     // selectable={false}
                     // updateSelected={}
-                    display_audio={true}
+                    // display_audio={true}
                     display_title={true}
                     style_options={{
                         width: '100%',
@@ -118,6 +118,7 @@ function Upload_Audio() {
                         top: '40px',
                         bottom: '0px',
                     }}
+                    deletable={true}
                     display_data={{
                         bool: [{
                             data: 'denoised_filedata',

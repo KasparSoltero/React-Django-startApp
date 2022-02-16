@@ -284,10 +284,20 @@ def updateHighlight(request):
     if request.method == 'POST':
 
         hl = AudioClip.objects.get(pk=request.POST['id'])
-
+        #adjust to new start and end times
         hl.start_time = request.POST['start']
         hl.end_time = request.POST['end']
         hl.save()
+
+        parent_audio = hl.parent_audio
+        #regenerate highlight filedata
+        sampleRate, signal = wave.read(parent_audio.denoised_filedata)
+        seg = signal[int(float(hl.start_time)*16000):int(float(hl.end_time)*16000)]
+        wave.write('noiseclip-temp.wav', rate = 16000, data = seg)
+        f =  open('noiseclip-temp.wav', 'rb')
+        audio_clip = File(f)
+        noiseclipTitle = parent_audio.title.split('.wav')[0] + f'_clip_{len(parent_audio.audioclip_set.all())}.wav'
+        hl.filedata.save(noiseclipTitle, audio_clip)
 
         return HttpResponse('edited highlight')
 

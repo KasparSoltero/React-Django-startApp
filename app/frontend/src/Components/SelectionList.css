@@ -106,3 +106,21 @@
     margin-left: 5px;
     display: inline-block;
 }
+
+.selectionlist-delete-container {
+    contents: 'delete';
+    color: var(--main-color);
+    display: inline-block;
+    float: right;
+    margin: 0 5px;
+    right: 0;
+    width: 60px;
+    height: 25px;
+    background-color: black;
+    text-align: center;
+    padding: 0;
+    border-radius: 5px;
+}
+.selectionlist-delete-container:hover {
+    cursor: pointer;
+}

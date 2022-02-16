@@ -116,7 +116,6 @@ function SelectionList(props) {
     function displayElement(el) {
 
         function displayData() {
-
             return (
                 <div className='list-data-container' key={String(el.id)}>
                     {props.display_data.bool.map(function(booldata) {
@@ -137,6 +136,26 @@ function SelectionList(props) {
             )
         }
 
+        function deleteButton() {
+            return (
+                <div 
+                    className='selectionlist-delete-container'
+                    onClick={
+                        (e)=>{
+                            var form = new FormData
+                            form.append('model', selected_header)
+                            form.append('id', el.id)
+                            axios({
+                                method:'post',
+                                url:'delete-object/',
+                                data: form,
+                            }).then((response)=>{console.log(response)})
+                        }
+                    }
+                >delete</div>
+            )
+        }
+
         return (
             <div>
                 {(props.display_title===undefined || props.display_title)? <div className='selection-list-title'>
@@ -149,7 +168,8 @@ function SelectionList(props) {
                     className='selection-list-audio'>
                 </audio> : <div/>}
 
-                {props.display_data? displayData() : <div/>}
+                {props.display_data? displayData() : null}
+                {props.deletable? deleteButton() : null}
             </div>
         )
     }
