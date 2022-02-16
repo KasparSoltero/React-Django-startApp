@@ -96,7 +96,6 @@ function Waveform(props) {
 
             var form = new FormData
             form.append('parent_id', props.audio_file.id)
-            form.append('title', 'new_clip')
 
             axios({
                 method: 'post',

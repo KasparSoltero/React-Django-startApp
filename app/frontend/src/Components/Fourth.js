@@ -24,30 +24,27 @@ function Fourth() {
 
     return (
         <div className='main-box'>
-            {/* <SelectionList 
-                list_type='backend-data' 
-                object={['Animal']}
-                // selectable={true}
-                updateSelected={handleListSelection}
-                // display_audio={true}
-                display_title={true}
-                // style_options={{
-                //     width: '40%',
-                //     position: 'absolute',
-                //     right: '0',
-                //     top: '0',
-                //     bottom: '0',
-                // }}
-            /> */}
-            <DropDown
-                id={'test'}
-                model='animal'
-                default={2}
-                onSelect={onSelect}
-                style_options={{
-                    width: '200px',
-                }}
-            />
+           <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 0 12 12">
+
+<title>Carrot SVG</title>
+
+<desc>This is an example of an SVG file with a carrot.</desc>
+
+<defs>
+
+<rect width="6" height="6" fill="#f6dede"/>
+
+</defs>
+
+<g>
+
+<circle cx="6" cy="6" r="3" fill="#527ce7"/>
+
+<path d="M3,6 L9,6 L3,0" fill="#527ce7"/>
+
+</g>
+
+</svg>
         </div>
     )
 }

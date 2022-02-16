@@ -149,17 +149,35 @@ function Highlights(props) {
     }
 
 
+    useEffect(()=>{
+        console.log('draggin left:')
+        console.log(dragging_left)
+    }, [ dragging_left ])
+
     function handleHighlightDrag(e) {
         
         setIsDragging(true)
         console.log(selected_highlight.offsetParent)
+        console.log(selected_highlight.offsetParent.offsetLeft)
+        console.log(selected_highlight.offsetParent.offsetParent)
+        console.log(selected_highlight.offsetParent.offsetParent.offsetLeft)
+        console.log(selected_highlight.offsetParent.offsetParent.offsetParent)
+        console.log(selected_highlight.offsetParent.offsetParent.offsetParent.offsetLeft)
 
-        let mouse = e.pageX - selected_highlight.offsetParent.offsetLeft
+        let mouse = e.pageX - selected_highlight.offsetParent.offsetLeft - selected_highlight.offsetParent.offsetParent.offsetLeft - 13
         let left = selected_highlight.offsetLeft
         let right = selected_highlight.offsetLeft + selected_highlight.offsetWidth
-
+        console.log('mouse:')
+        console.log(mouse)
+        console.log('left:')
+        console.log(left)
+        console.log('right:')
+        console.log(right)
         //drag either left or right side of highlight, depending on which side is closer
         if (Math.abs(mouse - left) > Math.abs(right - mouse)) {
+            console.log('setting dragging left false... abs(mouse-left), abs(right-mouse)')
+            console.log(Math.abs(mouse - left))
+            console.log(Math.abs(right - mouse))
             setDraggingLeft(false)
         } else setDraggingLeft(true)
     }

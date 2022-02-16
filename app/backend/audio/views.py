@@ -538,7 +538,7 @@ def tempCreateHighlight(request):
 
         #create a new audioclip object from 0s - 1s
         newclip = AudioClip.objects.create(
-            title = request.POST['title'], 
+            title = parent_audio.title.split('.wav')[0] + f'_clip_{len(parent_audio.audioclip_set.all())}.wav', 
             parent_audio = parent_audio,
             start_time = round(0),
             end_time = round(1)
@@ -552,7 +552,7 @@ def tempCreateHighlight(request):
         wave.write('noiseclip-temp.wav', rate = 16000, data = seg)
         f =  open('noiseclip-temp.wav', 'rb')
         audio_clip = File(f)
-        noiseclipTitle = parent_audio.title.split('.wav')[0] + f'_clip_x.wav'
+        noiseclipTitle = parent_audio.title.split('.wav')[0] + f'_clip_{len(parent_audio.audioclip_set.all())}.wav'
         newclip.filedata.save(noiseclipTitle, audio_clip)
 
 
